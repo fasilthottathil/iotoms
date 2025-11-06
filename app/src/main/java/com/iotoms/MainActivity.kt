@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
             OnePosTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val modifier = Modifier.padding(innerPadding)
+                    //test
                     ForgotPasswordScreen()
                 }
             }
