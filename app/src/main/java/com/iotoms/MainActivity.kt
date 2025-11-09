@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.iotoms.ui.auth.reset.ForgotPasswordScreen
+import com.iotoms.ui.cart.CartScreen
+import com.iotoms.ui.customer.CustomersScreen
+import com.iotoms.ui.customer.edit.EditCustomerScreen
 import com.iotoms.ui.theme.OnePosTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,8 +24,7 @@ class MainActivity : ComponentActivity() {
             OnePosTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val modifier = Modifier.padding(innerPadding)
-                    //test
-                    ForgotPasswordScreen()
+                    EditCustomerScreen()
                 }
             }
         }
