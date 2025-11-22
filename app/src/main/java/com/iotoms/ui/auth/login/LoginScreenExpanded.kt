@@ -39,12 +39,14 @@ import com.iotoms.ui.theme.PrimaryTeal
 import com.iotoms.ui.theme.PrimaryTealLight
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.R
+import com.iotoms.data.model.FormError
 
 /**
  * Created by Fasil on 01/11/2025
  */
 @Composable
 fun LoginScreenExpanded(
+    formError: FormError,
     username: String,
     password: String,
     domain: String,
@@ -95,7 +97,8 @@ fun LoginScreenExpanded(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Text
-                )
+                ),
+                errorText = if (formError.errors?.first == "username") formError.errors.second else null
             )
             Spacer(modifier = Modifier.Companion.height(SmallPadding))
             OutlinedTextBox(
@@ -114,7 +117,8 @@ fun LoginScreenExpanded(
                             .padding(end = SmallPadding)
                             .clickable { isPwdToggled = !isPwdToggled }
                     )
-                }
+                },
+                errorText = if (formError.errors?.first == "password") formError.errors.second else null
             )
             Spacer(modifier = Modifier.Companion.height(SmallPadding))
             OutlinedTextBox(
@@ -127,7 +131,8 @@ fun LoginScreenExpanded(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Text
-                )
+                ),
+                errorText = if (formError.errors?.first == "domain") formError.errors.second else null
             )
             Spacer(modifier = Modifier.Companion.height(SmallPadding))
             OutlinedTextBox(
@@ -140,7 +145,8 @@ fun LoginScreenExpanded(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Number
-                )
+                ),
+                errorText = if (formError.errors?.first == "regId") formError.errors.second else null
             )
             Spacer(modifier = Modifier.Companion.height(MediumPadding))
             FilledButton(

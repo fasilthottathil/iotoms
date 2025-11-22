@@ -48,9 +48,9 @@ fun OutlinedTextBox(
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
         ),
         readOnly = readOnly,
-        isError = isError,
+        isError = errorText != null,
         supportingText = {
-            if (isError && errorText != null) {
+            if (errorText != null) {
                 Text(
                     text = errorText,
                     color = MaterialTheme.colorScheme.error
