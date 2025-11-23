@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.compose.material.icons.core)
     implementation(libs.compose.material.icons.extended)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.workmanager)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
@@ -67,6 +68,7 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.gson)
+    implementation(libs.androidx.work.runtime.ktx)
 
 
     testImplementation(libs.junit)
