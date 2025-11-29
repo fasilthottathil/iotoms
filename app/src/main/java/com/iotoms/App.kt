@@ -3,6 +3,7 @@ package com.iotoms
 import android.app.Application
 import com.iotoms.di.networkModule
 import com.iotoms.di.repositoryModule
+import com.iotoms.di.storageModule
 import com.iotoms.di.useCaseModule
 import com.iotoms.di.viewModelModule
 import com.iotoms.di.workerModule
@@ -22,6 +23,7 @@ class App : Application() {
             androidLogger()
             androidContext(this@App)
             modules(
+                storageModule,
                 networkModule,
                 repositoryModule,
                 useCaseModule,

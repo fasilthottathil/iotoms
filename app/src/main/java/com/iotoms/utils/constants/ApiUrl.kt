@@ -13,4 +13,6 @@ object ApiUrl {
     const val BRANDS = "/api/v1/catalog/attributes/brands"
     const val SIZES = "/api/v1/catalog/attributes/sizes"
     const val STYLES = "/api/v1/catalog/attributes/styles"
+    const val CUSTOMERS = "/api/v1/crm/customers"
+    const val CUSTOMER_ID = "$CUSTOMERS/{id}"
 }
