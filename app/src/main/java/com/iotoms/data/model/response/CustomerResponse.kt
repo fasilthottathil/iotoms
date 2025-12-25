@@ -1,7 +1,9 @@
 package com.iotoms.data.model.response
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CustomerResponse(
 
 	@field:SerializedName("lastName")

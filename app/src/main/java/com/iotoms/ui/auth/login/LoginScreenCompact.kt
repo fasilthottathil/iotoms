@@ -40,12 +40,14 @@ import com.iotoms.ui.theme.PrimaryTealLight
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.R
 import com.iotoms.data.model.FormError
+import com.iotoms.ui.components.ErrorOutlinedBox
 
 /**
  * Created by Fasil on 01/11/2025
  */
 @Composable
 fun LoginScreenCompact(
+    error: String,
     formError: FormError,
     username: String,
     password: String,
@@ -56,7 +58,8 @@ fun LoginScreenCompact(
     onDomainChange: (String) -> Unit,
     onRegisterIdChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onCreateAccountClick: () -> Unit
+    onCreateAccountClick: () -> Unit,
+    clearError: () -> Unit
 ) {
     var isPwdToggled by rememberSaveable { mutableStateOf(false) }
     Column(
@@ -79,7 +82,7 @@ fun LoginScreenCompact(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
+                painter = painterResource(R.drawable.iotoms_logo),
                 contentDescription = "OnePos Logo"
             )
         }
@@ -87,6 +90,12 @@ fun LoginScreenCompact(
             .fillMaxSize()
             .weight(1f)
             .padding(MediumPadding)) {
+            if (error.isNotEmpty()) {
+                ErrorOutlinedBox(error = error) {
+                    clearError()
+                }
+                Spacer(modifier = Modifier.Companion.height(MediumPadding))
+            }
             OutlinedTextBox(
                 value = username,
                 onValueChange = onUsernameChange,

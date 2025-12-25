@@ -1,6 +1,8 @@
 package com.iotoms.di
 
+import com.iotoms.data.repository.AuthenticationRepositoryImpl
 import com.iotoms.data.repository.PayModeRepositoryImpl
+import com.iotoms.domain.repository.AuthenticationRepository
 import com.iotoms.domain.repository.PayModeRepository
 import org.koin.dsl.module
 
@@ -9,4 +11,5 @@ import org.koin.dsl.module
  */
 val repositoryModule = module {
     factory<PayModeRepository> { PayModeRepositoryImpl(get()) }
+    factory<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
 }

@@ -12,6 +12,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
@@ -51,6 +52,9 @@ class ApiClient() {
                     takeFrom(ApiUrl.BASE_URL)
                 }
                 contentType(Json)
+                if (pref.getDomainName().isNullOrEmpty().not()) {
+                    header("X-TenantID", pref.getDomainName().orEmpty())
+                }
             }
             install(HttpTimeout) {
                 requestTimeoutMillis = 15000

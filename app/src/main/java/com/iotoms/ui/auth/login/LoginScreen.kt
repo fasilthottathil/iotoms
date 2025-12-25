@@ -13,6 +13,7 @@ import androidx.navigation3.runtime.NavKey
 import com.iotoms.data.enum.DeviceOrientation
 import com.iotoms.data.model.FormError
 import com.iotoms.data.model.request.LoginRequest
+import com.iotoms.ui.components.LoaderDialog
 import com.iotoms.utils.getDeviceOrientation
 import kotlinx.serialization.Serializable
 
@@ -29,8 +30,9 @@ fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit
     var domain by rememberSaveable { mutableStateOf("") }
     var registerId by rememberSaveable { mutableStateOf("") }
 
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
     var formError by remember { mutableStateOf(FormError()) }
+    var error by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(state.value) {
         isLoading = false
@@ -39,20 +41,30 @@ fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit
             is LoginUiState.Error -> {
                 (state.value as LoginUiState.Error).let {
                     formError = it.formError ?: FormError()
+                    error = it.message.orEmpty()
                 }
             }
 
             LoginUiState.Idle -> {}
             LoginUiState.Loading -> isLoading = true
+            LoginUiState.LoginSuccess -> {
+
+            }
         }
     }
 
     fun resetFormError() {
         formError = FormError()
+        error = ""
+    }
+
+    if (isLoading) {
+        LoaderDialog()
     }
 
     if (getDeviceOrientation() == DeviceOrientation.PORTRAIT) {
         LoginScreenCompact(
+            error = error,
             formError = formError,
             username = userName,
             onUsernameChange = {
@@ -78,11 +90,16 @@ fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit
             },
             onLoginClick = {
                 onLoginClick(LoginRequest(userName, password, domain, registerId))
+                error = ""
             },
-            onCreateAccountClick = { /*TODO*/ }
+            onCreateAccountClick = { /*TODO*/ },
+            clearError = {
+                error = ""
+            }
         )
     } else {
         LoginScreenExpanded(
+            error = error,
             formError = formError,
             username = userName,
             onUsernameChange = {
@@ -108,8 +125,12 @@ fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit
             },
             onLoginClick = {
                 onLoginClick(LoginRequest(userName, password, domain, registerId))
+                error = ""
             },
-            onCreateAccountClick = { /*TODO*/ }
+            onCreateAccountClick = { /*TODO*/ },
+            clearError = {
+                error = ""
+            }
         )
     }
 }

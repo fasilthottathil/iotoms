@@ -1,7 +1,9 @@
 package com.iotoms.data.model.response
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ItemResponse(
 
 	@field:SerializedName("modifiedTime")
@@ -70,7 +72,7 @@ data class ItemResponse(
 	@field:SerializedName("status")
 	val status: String? = null
 )
-
+@Serializable
 data class Subcategory(
 
 	@field:SerializedName("modifiedTime")
@@ -82,7 +84,7 @@ data class Subcategory(
 	@field:SerializedName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class Department(
 
 	@field:SerializedName("modifiedTime")
@@ -94,7 +96,7 @@ data class Department(
 	@field:SerializedName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class Tax(
 
 	@field:SerializedName("modifiedTime")
@@ -115,7 +117,7 @@ data class Tax(
 	@field:SerializedName("status")
 	val status: String? = null
 )
-
+@Serializable
 data class Category(
 
 	@field:SerializedName("modifiedTime")
@@ -127,7 +129,7 @@ data class Category(
 	@field:SerializedName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class Color(
 
 	@field:SerializedName("modifiedTime")
@@ -142,7 +144,7 @@ data class Color(
 	@field:SerializedName("status")
 	val status: String? = null
 )
-
+@Serializable
 data class Brand(
 
 	@field:SerializedName("modifiedTime")
@@ -154,7 +156,7 @@ data class Brand(
 	@field:SerializedName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class Style(
 
 	@field:SerializedName("modifiedTime")
@@ -166,7 +168,7 @@ data class Style(
 	@field:SerializedName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class Size(
 
 	@field:SerializedName("modifiedTime")
@@ -181,7 +183,7 @@ data class Size(
 	@field:SerializedName("status")
 	val status: String? = null
 )
-
+@Serializable
 data class ImageGallery(
 
 	@field:SerializedName("modifiedTime")

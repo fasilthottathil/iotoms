@@ -1,6 +1,6 @@
 package com.iotoms.data.local.dao
 
-import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -27,5 +27,5 @@ interface ItemDao {
     suspend fun deleteItemById(itemId: Int)
 
     @Query("SELECT * FROM items")
-    suspend fun getPaginatedItems(): PagingData<List<ItemEntity>>
+    fun getPaginatedItems(): PagingSource<Int, ItemEntity>
 }

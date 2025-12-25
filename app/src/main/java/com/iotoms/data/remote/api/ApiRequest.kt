@@ -6,6 +6,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.iotoms.utils.Result
+import com.iotoms.utils.extensions.mapObjectFromJsonString
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -35,6 +36,7 @@ suspend inline fun <reified T> apiRequest(call: () -> HttpResponse): Result<T, A
         }
 
         401 -> Result.Error(ApiError(NetworkError.UNAUTHORIZED))
+        403 -> Result.Error(ApiError(NetworkError.FORBIDDEN, "Access denied"))
         404 -> Result.Error(ApiError(NetworkError.NOT_FOUND))
         409 -> Result.Error(ApiError(NetworkError.CONFLICT))
         408 -> Result.Error(ApiError(NetworkError.REQUEST_TIMEOUT))
@@ -43,7 +45,7 @@ suspend inline fun <reified T> apiRequest(call: () -> HttpResponse): Result<T, A
             Result.Error(
                 ApiError(
                     NetworkError.SERVER_ERROR,
-                    Json.decodeFromString<ErrorResponse>(response.bodyAsText()).message
+                    response.bodyAsText().mapObjectFromJsonString<ErrorResponse>()?.message
                 )
             )
         }
@@ -52,7 +54,7 @@ suspend inline fun <reified T> apiRequest(call: () -> HttpResponse): Result<T, A
             Result.Error(
                 ApiError(
                     NetworkError.UNKNOWN,
-                    Json.decodeFromString<ErrorResponse>(response.bodyAsText()).message
+                    response.bodyAsText().mapObjectFromJsonString<ErrorResponse>()?.message
                 )
             )
         }

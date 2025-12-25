@@ -75,7 +75,7 @@ fun EmployeePasswordLoginScreenExpanded(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
+                painter = painterResource(R.drawable.iotoms_logo),
                 contentDescription = "OnePos Logo"
             )
         }

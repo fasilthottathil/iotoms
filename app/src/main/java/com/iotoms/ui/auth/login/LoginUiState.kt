@@ -8,5 +8,6 @@ import com.iotoms.data.model.FormError
 sealed class LoginUiState {
     data object Idle : LoginUiState()
     data object Loading : LoginUiState()
+    data object LoginSuccess : LoginUiState()
     data class Error(val message: String? = null, val formError: FormError? = null) : LoginUiState()
 }

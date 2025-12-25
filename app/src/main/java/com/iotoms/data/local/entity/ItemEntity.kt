@@ -1,6 +1,7 @@
 package com.iotoms.data.local.entity
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.iotoms.data.model.response.Color
 import com.iotoms.data.model.response.ImageGallery
@@ -10,6 +11,10 @@ import com.iotoms.data.model.response.ImageGallery
  */
 @Entity(tableName = "items")
 data class ItemEntity(
+
+    @PrimaryKey
+    @field:SerializedName("itemId")
+    val itemId: String,
 
     @field:SerializedName("modifiedTime")
     val modifiedTime: String? = null,
@@ -40,9 +45,6 @@ data class ItemEntity(
 
     @field:SerializedName("type")
     val type: String? = null,
-
-    @field:SerializedName("itemId")
-    val itemId: String? = null,
 
     @field:SerializedName("itemName")
     val itemName: String? = null,

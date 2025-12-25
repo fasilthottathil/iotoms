@@ -1,10 +1,12 @@
 package com.iotoms.data.model.response
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 25/12/2025
  */
+@Serializable
 data class PageResponse<T>(
     @field:SerializedName("totalElements")
     val totalElements: Long? = null,
@@ -39,7 +41,7 @@ data class PageResponse<T>(
     @field:SerializedName("empty")
     val empty: Boolean? = null
 )
-
+@Serializable
 data class Pageable(
     @field:SerializedName("unpaged")
     val unpaged: Boolean? = null,
@@ -59,7 +61,7 @@ data class Pageable(
     @field:SerializedName("sort")
     val sort: List<Sort>? = null
 )
-
+@Serializable
 data class Sort(
     @field:SerializedName("direction")
     val direction: String? = null,

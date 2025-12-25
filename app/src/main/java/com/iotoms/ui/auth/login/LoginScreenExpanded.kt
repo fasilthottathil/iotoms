@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -40,12 +42,14 @@ import com.iotoms.ui.theme.PrimaryTealLight
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.R
 import com.iotoms.data.model.FormError
+import com.iotoms.ui.components.ErrorOutlinedBox
 
 /**
  * Created by Fasil on 01/11/2025
  */
 @Composable
 fun LoginScreenExpanded(
+    error: String,
     formError: FormError,
     username: String,
     password: String,
@@ -56,7 +60,8 @@ fun LoginScreenExpanded(
     onDomainChange: (String) -> Unit,
     onRegisterIdChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onCreateAccountClick: () -> Unit
+    onCreateAccountClick: () -> Unit,
+    clearError: () -> Unit
 ) {
     var isPwdToggled by rememberSaveable { mutableStateOf(false) }
     Row(
@@ -78,15 +83,22 @@ fun LoginScreenExpanded(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
+                painter = painterResource(R.drawable.iotoms_logo),
                 contentDescription = "OnePos Logo"
             )
         }
         Column(modifier = Modifier
             .fillMaxSize()
             .weight(1f)
-            .padding(MediumPadding),
+            .padding(MediumPadding)
+            .verticalScroll(state = rememberScrollState()),
             verticalArrangement = Arrangement.Center) {
+            if (error.isNotEmpty()) {
+                ErrorOutlinedBox(error = error) {
+                    clearError()
+                }
+                Spacer(modifier = Modifier.Companion.height(MediumPadding))
+            }
             OutlinedTextBox(
                 value = username,
                 onValueChange = onUsernameChange,

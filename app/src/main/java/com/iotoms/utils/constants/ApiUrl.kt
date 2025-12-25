@@ -20,4 +20,9 @@ object ApiUrl {
     const val TAXES = "$ATTRIBUTES/taxes"
     const val DISCOUNTS = "$ATTRIBUTES/discounts"
     const val ITEMS = "$CATALOG/items"
+    const val MANAGEMENT = "/api/v1/management"
+    const val USERS = "$MANAGEMENT/users"
+    const val AUTH = "/api/v1/auth"
+    const val REGISTER = "$AUTH/registration"
+    const val AUTHENTICATE = "$AUTH/authenticate"
 }

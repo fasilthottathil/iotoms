@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * Created by Fasil on 22/11/2025
  */
 val viewModelModule = module {
-    viewModel<LoginViewModel> { LoginViewModel() }
+    viewModel<LoginViewModel> { LoginViewModel(get()) }
 }
