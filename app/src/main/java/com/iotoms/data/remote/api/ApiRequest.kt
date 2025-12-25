@@ -35,6 +35,7 @@ suspend inline fun <reified T> apiRequest(call: () -> HttpResponse): Result<T, A
         }
 
         401 -> Result.Error(ApiError(NetworkError.UNAUTHORIZED))
+        404 -> Result.Error(ApiError(NetworkError.NOT_FOUND))
         409 -> Result.Error(ApiError(NetworkError.CONFLICT))
         408 -> Result.Error(ApiError(NetworkError.REQUEST_TIMEOUT))
         413 -> Result.Error(ApiError(NetworkError.PAYLOAD_TOO_LARGE))

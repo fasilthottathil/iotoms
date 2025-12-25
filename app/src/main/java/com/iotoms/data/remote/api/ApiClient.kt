@@ -1,5 +1,6 @@
 package com.iotoms.data.remote.api
 
+import com.iotoms.data.local.pref.AppPreference
 import com.iotoms.utils.constants.ApiUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -21,7 +22,7 @@ import kotlinx.serialization.json.Json
  * Created by Fasil on 22/11/2025
  */
 class ApiClient() {
-    fun getClient(engine: HttpClientEngine): HttpClient {
+    fun getClient(engine: HttpClientEngine, pref: AppPreference): HttpClient {
         return HttpClient(engine) {
             install(Logging) {
                 level = LogLevel.ALL
@@ -38,10 +39,10 @@ class ApiClient() {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        BearerTokens(accessToken = "pref.getBearerToken()", refreshToken = "")
+                        BearerTokens(accessToken = pref.getBearerToken().orEmpty(), refreshToken = "")
                     }
                     refreshTokens {
-                        BearerTokens(accessToken = "pref.getBearerToken()", refreshToken = "")
+                        BearerTokens(accessToken = pref.getBearerToken().orEmpty(), refreshToken = "")
                     }
                 }
             }

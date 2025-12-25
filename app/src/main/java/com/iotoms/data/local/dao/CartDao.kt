@@ -1,7 +1,9 @@
 package com.iotoms.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.Upsert
+import com.iotoms.data.local.entity.CartEntity
 import com.iotoms.data.local.entity.CartItemEntity
 
 /**
@@ -9,6 +11,12 @@ import com.iotoms.data.local.entity.CartItemEntity
  */
 @Dao
 interface CartDao {
+    @Upsert
+    suspend fun upsertCart(cartEntity: CartEntity)
+
+    @Query("SELECT * FROM cart LIMIT 1")
+    suspend fun getCart(): CartEntity?
+
     @Upsert
     suspend fun upsertCartItem(cartItemEntity: CartItemEntity)
 }

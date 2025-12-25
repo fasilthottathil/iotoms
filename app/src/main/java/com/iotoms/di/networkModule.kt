@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * Created by Fasil on 26/10/2025
  */
 val networkModule = module {
-    single<HttpClient> { ApiClient().getClient(OkHttp.create()) }
+    single<HttpClient> { ApiClient().getClient(OkHttp.create(), get()) }
 }

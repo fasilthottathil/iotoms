@@ -6,6 +6,7 @@ package com.iotoms.utils
 enum class NetworkError : Error {
     REQUEST_TIMEOUT,
     UNAUTHORIZED,
+    NOT_FOUND,
     CONFLICT,
     TOO_MANY_REQUESTS,
     NO_INTERNET,

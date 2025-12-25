@@ -2,6 +2,7 @@ package com.iotoms.di
 
 import androidx.room.Room
 import com.iotoms.data.local.db.AppDatabase
+import com.iotoms.data.local.pref.AppPreference
 import org.koin.dsl.module
 
 /**
@@ -15,4 +16,5 @@ val storageModule = module {
             name = "iotoms.db"
         ).build()
     }
+    single<AppPreference> { AppPreference(context = get()) }
 }

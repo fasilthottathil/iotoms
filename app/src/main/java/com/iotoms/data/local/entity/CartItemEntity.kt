@@ -20,7 +20,10 @@ data class CartItemEntity(
     var price: Double,
     var modifiedPrice: Double? = null,
     var transactionType: TransactionType = TransactionType.SALE,
+    var transactionNumber: String,
     var imageUrl: String? = null,
     var cartDiscounts: List<CartDiscount> = emptyList(),
-    var discount: Double = cartDiscounts.sumOf { it.discount }
+    var discount: Double = cartDiscounts.sumOf { it.discount },
+    var tax: Double = 0.0,
+    var taxIds: List<Int> = emptyList()
 )

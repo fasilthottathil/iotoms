@@ -29,4 +29,15 @@ object Converters {
     fun cartDiscountListToString(list: List<CartDiscount>?): String? {
         return list?.toStringByGson()
     }
+
+    @TypeConverter
+    fun fromIntList(value: List<Int>?): String? {
+        return value?.toStringByGson()
+    }
+
+    @TypeConverter
+    fun toIntList(value: String?): List<Int>? {
+        return value?.mapObjectFromJsonString()
+    }
+
 }

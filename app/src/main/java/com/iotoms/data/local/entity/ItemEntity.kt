@@ -33,10 +33,10 @@ data class ItemEntity(
     val description: String? = null,
 
     @field:SerializedName("discountId")
-    val discountId: Int? = null,
+    val discountIds: List<Int>? = null,
 
     @field:SerializedName("taxId")
-    val taxId: Int? = null,
+    val taxIds: List<Int>? = null,
 
     @field:SerializedName("type")
     val type: String? = null,
