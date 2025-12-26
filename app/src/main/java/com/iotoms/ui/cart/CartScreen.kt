@@ -35,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavKey
 import com.iotoms.data.enum.DeviceOrientation
 import com.iotoms.ui.components.cartDrawerItem
 import com.iotoms.ui.theme.ButtonHeight
@@ -43,10 +44,13 @@ import com.iotoms.ui.theme.LargePadding
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.utils.getDeviceOrientation
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 06/11/2025
  */
+@Serializable
+data object Cart: NavKey
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(modifier: Modifier = Modifier) {

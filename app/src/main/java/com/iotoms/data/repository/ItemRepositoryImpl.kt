@@ -34,6 +34,9 @@ class ItemRepositoryImpl(
                 is Result.Success -> {
                     val items = result.data.content?.map { it.toItemEntity() } ?: emptyList()
 
+                    if (items.isEmpty()) {
+                        return Result.Success(pageStates)
+                    }
                     appDatabase.itemDao().insertItems(items)
 
                     pageStates += true
