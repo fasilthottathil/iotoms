@@ -33,7 +33,7 @@ Cashiers need a fast, kiosk-ready UI to manage carts, swap transactions, hold or
 - **cartDrawerItem / ProductItem / QuickPickItem / CartItem**: Shared components for repeated UI.
 
 ### Domain & Data
-- Current implementation is UI-only; data wiring to cart repositories will happen in later stories.
+- `CartViewModel` + `GetPaginatedItemsFromLocalUseCase` feed Room-backed `LazyPagingItems<ItemEntity>` into the grid; quick picks remain stubbed.
 
 ### State Management
 - Local `rememberSaveable` booleans determine whether the calculator is visible.
@@ -44,5 +44,5 @@ Cashiers need a fast, kiosk-ready UI to manage carts, swap transactions, hold or
 
 ## Future Enhancements
 - Hook add-to-cart events to `CartRepository`.
-- Populate quick pick/product lists from live data.
+- Populate quick picks from live data (grid already binds to Room paging).
 - Wire drawer actions to navigation or dialogs.
