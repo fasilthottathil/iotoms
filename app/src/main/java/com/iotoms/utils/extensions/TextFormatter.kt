@@ -35,3 +35,8 @@ fun String.formatAmount(): String {
 
     return "$dollars.$cents"
 }
+
+fun Double?.currencyFormat(): String {
+    if (this == null) return "0.00"
+    return "₹" + String.format(Locale.getDefault(), "%.2f", this)
+}

@@ -7,14 +7,18 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.iotoms.data.local.pref.AppPreference
 import com.iotoms.ui.auth.login.Login
 import com.iotoms.ui.auth.login.LoginScreen
 import com.iotoms.ui.auth.login.LoginViewModel
 import com.iotoms.ui.cart.Cart
 import com.iotoms.ui.cart.CartScreen
+import com.iotoms.ui.cart.CartViewModel
 import com.iotoms.ui.sync.DataSync
 import com.iotoms.ui.sync.DataSyncDialogScreen
 import com.iotoms.ui.sync.DataSyncViewModel
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -22,7 +26,8 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun IotomsNavigation() {
-    val backStack = rememberNavBackStack(Login)
+    val appPreference = koinInject<AppPreference>()
+    val backStack = rememberNavBackStack(if (appPreference.getDomainName().isNullOrEmpty()) Login else Cart)
     NavDisplay(
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
@@ -56,7 +61,11 @@ fun IotomsNavigation() {
                 )
             }
             entry<Cart> {
-                CartScreen()
+                val viewModel = koinViewModel<CartViewModel>()
+                CartScreen(
+                    uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    pagingItems = viewModel.pagingItemsFlow.collectAsLazyPagingItems()
+                )
             }
         }
     )
