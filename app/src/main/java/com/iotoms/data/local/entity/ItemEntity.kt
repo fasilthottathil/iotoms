@@ -29,7 +29,7 @@ data class ItemEntity(
     val color: Color? = null,
 
     @field:SerializedName("costPrice")
-    val costPrice: Int? = null,
+    val costPrice: Double? = null,
 
     @field:SerializedName("upc")
     val upc: String? = null,

@@ -1,6 +1,8 @@
 package com.iotoms.di
 
 import com.iotoms.ui.auth.login.LoginViewModel
+import com.iotoms.ui.cart.CartViewModel
+import com.iotoms.ui.sync.DataSyncViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -9,4 +11,6 @@ import org.koin.dsl.module
  */
 val viewModelModule = module {
     viewModel<LoginViewModel> { LoginViewModel(get()) }
+    viewModel<DataSyncViewModel> { DataSyncViewModel(get()) }
+    viewModel<CartViewModel> { CartViewModel(get()) }
 }

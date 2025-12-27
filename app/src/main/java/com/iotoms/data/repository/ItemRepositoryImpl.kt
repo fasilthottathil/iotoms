@@ -1,6 +1,10 @@
 package com.iotoms.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.iotoms.data.local.db.AppDatabase
+import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.data.mapper.toItemEntity
 import com.iotoms.data.model.response.ItemResponse
 import com.iotoms.data.model.response.PageResponse
@@ -12,6 +16,7 @@ import com.iotoms.utils.Result
 import com.iotoms.utils.constants.ApiUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by Fasil on 25/12/2025
@@ -34,6 +39,9 @@ class ItemRepositoryImpl(
                 is Result.Success -> {
                     val items = result.data.content?.map { it.toItemEntity() } ?: emptyList()
 
+                    if (items.isEmpty()) {
+                        return Result.Success(pageStates)
+                    }
                     appDatabase.itemDao().insertItems(items)
 
                     pageStates += true
@@ -51,5 +59,15 @@ class ItemRepositoryImpl(
                 }
             }
         }
+    }
+
+    override fun getPaginateItemsFromLocal(): Flow<PagingData<ItemEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { appDatabase.itemDao().getPaginatedItems() }
+        ).flow
     }
 }

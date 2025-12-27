@@ -19,7 +19,7 @@ data class ItemResponse(
 	val color: Color? = null,
 
 	@field:SerializedName("costPrice")
-	val costPrice: Int? = null,
+	val costPrice: Double? = null,
 
 	@field:SerializedName("upc")
 	val upc: String? = null,
@@ -43,7 +43,7 @@ data class ItemResponse(
 	val itemName: String? = null,
 
 	@field:SerializedName("sellingPrice")
-	val sellingPrice: Int? = null,
+	val sellingPrice: Double? = null,
 
 	@field:SerializedName("size")
 	val size: Size? = null,

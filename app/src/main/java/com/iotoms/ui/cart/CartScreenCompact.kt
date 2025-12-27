@@ -19,11 +19,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Discount
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.ProductItem
 import com.iotoms.ui.components.QuickPickItem
 import com.iotoms.ui.theme.ButtonHeight
@@ -41,7 +45,8 @@ import com.iotoms.ui.theme.SuccessGreen
 fun CartScreenCompact(
     modifier: Modifier,
     canShowGeneralCalculator: Boolean,
-    onClickCartGeneralToggle: () -> Unit
+    onClickCartGeneralToggle: () -> Unit,
+    pagingItems: LazyPagingItems<ItemEntity>
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
@@ -84,9 +89,22 @@ fun CartScreenCompact(
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 200.dp)
             ) {
-                items(20) {
-                    Box(modifier = Modifier.padding(ExtraSmallPadding)) {
-                        ProductItem()
+                when (pagingItems.loadState.refresh) {
+                    is LoadState.Loading -> {
+                        item { CircularProgressIndicator() }
+                    }
+
+                    else -> {
+                        items(
+                            count = pagingItems.itemCount,
+                            key = { index -> pagingItems[index]?.id ?: index }
+                        ) { index ->
+                            pagingItems[index]?.let { item ->
+                                Box(modifier = Modifier.padding(ExtraSmallPadding)) {
+                                    ProductItem(item)
+                                }
+                            }
+                        }
                     }
                 }
             }

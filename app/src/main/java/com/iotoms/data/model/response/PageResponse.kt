@@ -30,7 +30,7 @@ data class PageResponse<T>(
     val number: Int? = null,
 
     @field:SerializedName("sort")
-    val sort: List<Sort>? = null,
+    val sort: Sort? = null,
 
     @field:SerializedName("first")
     val first: Boolean? = null,
@@ -59,7 +59,7 @@ data class Pageable(
     val offset: Long? = null,
 
     @field:SerializedName("sort")
-    val sort: List<Sort>? = null
+    val sort: Sort? = null
 )
 @Serializable
 data class Sort(

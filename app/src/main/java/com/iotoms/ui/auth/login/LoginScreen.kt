@@ -24,7 +24,11 @@ import kotlinx.serialization.Serializable
 data object Login : NavKey
 
 @Composable
-fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit) {
+fun LoginScreen(
+    state: State<LoginUiState>,
+    onLoginClick: (LoginRequest) -> Unit,
+    onLogin: () -> Unit
+) {
     var userName by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var domain by rememberSaveable { mutableStateOf("") }
@@ -48,7 +52,7 @@ fun LoginScreen(state: State<LoginUiState>, onLoginClick: (LoginRequest) -> Unit
             LoginUiState.Idle -> {}
             LoginUiState.Loading -> isLoading = true
             LoginUiState.LoginSuccess -> {
-
+                onLogin()
             }
         }
     }

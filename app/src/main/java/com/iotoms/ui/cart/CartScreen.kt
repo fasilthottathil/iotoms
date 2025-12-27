@@ -28,6 +28,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,25 +37,51 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavKey
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import com.iotoms.data.enum.DeviceOrientation
+import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.cartDrawerItem
 import com.iotoms.ui.theme.ButtonHeight
 import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.LargePadding
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.utils.getDeviceOrientation
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 06/11/2025
  */
+@Serializable
+data object Cart: NavKey
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen(modifier: Modifier = Modifier) {
+fun CartScreen(
+    uiState: State<CartUiState>,
+    pagingItems: LazyPagingItems<ItemEntity>
+) {
     val orientation = getDeviceOrientation()
     var canShowGeneralCalculator by rememberSaveable { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(uiState.value) {
+        when(uiState.value) {
+            is CartUiState.Error -> {
+
+            }
+            CartUiState.Idle -> {
+
+            }
+            CartUiState.Loading -> {
+
+            }
+        }
+    }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -113,7 +141,6 @@ fun CartScreen(modifier: Modifier = Modifier) {
                                     imageVector = Icons.Default.SwapHoriz,
                                     contentDescription = null
                                 )
-                                Text("RETURN")
                             }
                             Spacer(modifier = Modifier.width(LargePadding))
                             Row(
@@ -124,7 +151,6 @@ fun CartScreen(modifier: Modifier = Modifier) {
                                     imageVector = Icons.Default.PauseCircleOutline,
                                     contentDescription = null
                                 )
-                                Text("HOLD")
                             }
                             Spacer(modifier = Modifier.width(LargePadding))
                             Row(
@@ -135,9 +161,6 @@ fun CartScreen(modifier: Modifier = Modifier) {
                                     imageVector = Icons.Default.PersonAddAlt,
                                     contentDescription = null
                                 )
-                                if (orientation == DeviceOrientation.LANDSCAPE) {
-                                    Text("CUSTOMER")
-                                }
                             }
                             Spacer(modifier = Modifier.width(LargePadding))
                             Row(
@@ -148,7 +171,6 @@ fun CartScreen(modifier: Modifier = Modifier) {
                                     imageVector = Icons.Default.RemoveShoppingCart,
                                     contentDescription = null
                                 )
-                                Text("CLEAR")
                             }
                         }
                     )
@@ -158,6 +180,7 @@ fun CartScreen(modifier: Modifier = Modifier) {
                     if (orientation == DeviceOrientation.PORTRAIT) {
                         CartScreenCompact(
                             modifier = Modifier.padding(innerPadding),
+                            pagingItems = pagingItems,
                             canShowGeneralCalculator = canShowGeneralCalculator,
                             onClickCartGeneralToggle = {
                                 canShowGeneralCalculator = !canShowGeneralCalculator
@@ -166,6 +189,7 @@ fun CartScreen(modifier: Modifier = Modifier) {
                     } else {
                         CartScreenExpanded(
                             modifier = Modifier.padding(innerPadding),
+                            pagingItems = pagingItems,
                             canShowGeneralCalculator = canShowGeneralCalculator,
                             onClickCartGeneralToggle = {
                                 canShowGeneralCalculator = !canShowGeneralCalculator
