@@ -4,9 +4,12 @@ import androidx.room.TypeConverter
 import com.iotoms.data.model.CartDiscount
 import com.iotoms.data.model.response.Brand
 import com.iotoms.data.model.response.Color
+import com.iotoms.data.model.response.FeaturesItem
 import com.iotoms.data.model.response.ImageGallery
 import com.iotoms.data.model.response.Size
+import com.iotoms.data.model.response.StoreResponse
 import com.iotoms.data.model.response.Style
+import com.iotoms.data.model.response.VenueResponseItem
 import com.iotoms.utils.extensions.mapObjectFromJsonString
 import com.iotoms.utils.extensions.toStringByGson
 
@@ -95,6 +98,34 @@ object Converters {
 
     @TypeConverter
     fun toSize(value: String?): Size? {
+        return value?.mapObjectFromJsonString()
+    }
+
+    @TypeConverter
+    fun fromVenueResponseItem(value: VenueResponseItem?): String? {
+        return value?.toStringByGson()
+    }
+    @TypeConverter
+    fun toVenueResponseItem(value: String?): VenueResponseItem? {
+        return value?.mapObjectFromJsonString()
+    }
+
+    @TypeConverter
+    fun fromStoreResponseItem(value: StoreResponse?): String? {
+        return value?.toStringByGson()
+    }
+    @TypeConverter
+    fun toStoreResponseItem(value: String?): StoreResponse? {
+        return value?.mapObjectFromJsonString()
+    }
+
+    @TypeConverter
+    fun fromFeaturesItemList(value: List<FeaturesItem?>?): String? {
+        return value?.toStringByGson()
+    }
+
+    @TypeConverter
+    fun toFeaturesItemList(value: String?): List<FeaturesItem?>? {
         return value?.mapObjectFromJsonString()
     }
 

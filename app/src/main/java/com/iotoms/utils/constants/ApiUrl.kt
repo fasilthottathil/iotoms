@@ -5,6 +5,8 @@ package com.iotoms.utils.constants
  */
 object ApiUrl {
     const val BASE_URL = "https://beta.iotoms.com"
+    const val MERCHANT = "/api/v1/merchant"
+    const val BUSINESS = "/api/v1/catalog/business"
     const val PAY_MODES = "/api/v1/transaction/paymodes"
     const val CATALOG = "/api/v1/catalog"
     const val ATTRIBUTES = "$CATALOG/attributes"
@@ -25,4 +27,9 @@ object ApiUrl {
     const val AUTH = "/api/v1/auth"
     const val REGISTER = "$AUTH/registration"
     const val AUTHENTICATE = "$AUTH/authenticate"
+    const val PLANS = "$MERCHANT/plans"
+    const val VENUES = "$BUSINESS/venues"
+    const val STORES = "$BUSINESS/stores"
+    const val REGISTERS = "$BUSINESS/registers"
+    const val STORE_BRANDING = "$STORES/branding"
 }
