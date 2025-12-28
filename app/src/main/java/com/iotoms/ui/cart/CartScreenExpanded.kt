@@ -58,10 +58,16 @@ fun CartScreenExpanded(
     onItemClick: (ItemEntity) -> Unit,
     onGeneralItemClick: (String) -> Unit,
     uiState: State<CartUiState>,
-    onUpdateQuantity: (CartItemEntity) -> Unit
+    onUpdateQuantity: (CartItemEntity) -> Unit,
+    setQuickPickItemSource: (ItemSource) -> Unit,
+    itemSource: State<ItemSource>
 ) {
     val cartItems = when (val state = uiState.value) {
         is CartUiState.Cart -> state.cartItems
+        else -> emptyList()
+    }
+    val quickPicks = when (val state = uiState.value) {
+        is CartUiState.Cart -> state.quickPicks
         else -> emptyList()
     }
     Row(modifier = modifier.fillMaxSize()) {
@@ -101,12 +107,47 @@ fun CartScreenExpanded(
             if (canShowGeneralCalculator) {
                 GeneralItemCalculatorScreen(onClickAdd = onGeneralItemClick, uiState = uiState)
             } else {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(SmallPadding)) {
-                    items(10) {
-                        QuickPickItem()
+                if (quickPicks.isNotEmpty()) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(SmallPadding)) {
+                        item {  }
+                        item {
+                            QuickPickItem(
+                                quickPick = QuickPick(
+                                    id = "All Items",
+                                    label = "All Items",
+                                    backgroundColor = null,
+                                    itemIds = listOf()
+                                ),
+                                isSelected = itemSource.value is ItemSource.All,
+                                onClick = {
+                                    setQuickPickItemSource(ItemSource.All)
+                                }
+                            )
+                        }
+                        items(
+                            count = quickPicks.size,
+                            key = { index -> quickPicks[index].id }
+                        ) {
+                            QuickPickItem(
+                                quickPick = quickPicks[it],
+                                isSelected = if (itemSource.value is ItemSource.ByIds) {
+                                    (itemSource.value as ItemSource.ByIds).pageId == quickPicks[it].id
+                                } else {
+                                    false
+                                },
+                                onClick = {
+                                    setQuickPickItemSource(
+                                        ItemSource.ByIds(
+                                            itemIds = quickPicks[it].itemIds,
+                                            pageId = quickPicks[it].id
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(ExtraSmallPadding))
                 }
-                Spacer(modifier = Modifier.height(ExtraSmallPadding))
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 200.dp)
                 ) {

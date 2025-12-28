@@ -12,4 +12,5 @@ import kotlinx.coroutines.flow.Flow
 interface ItemRepository {
     suspend fun getAllItemsPaginated(page: Int): Result<List<Boolean>, ApiError>
     fun getPaginateItemsFromLocal(): Flow<PagingData<ItemEntity>>
+    fun getPaginateItemsByItemIdsFromLocal(ids: List<String>): Flow<PagingData<ItemEntity>>
 }

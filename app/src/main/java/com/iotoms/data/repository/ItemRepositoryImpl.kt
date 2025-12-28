@@ -70,4 +70,14 @@ class ItemRepositoryImpl(
             pagingSourceFactory = { appDatabase.itemDao().getPaginatedItems() }
         ).flow
     }
+
+    override fun getPaginateItemsByItemIdsFromLocal(ids: List<String>): Flow<PagingData<ItemEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { appDatabase.itemDao().getPaginatedItemsByItemIds(ids) }
+        ).flow
+    }
 }

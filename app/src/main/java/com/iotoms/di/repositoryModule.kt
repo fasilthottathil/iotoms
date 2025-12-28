@@ -10,6 +10,7 @@ import com.iotoms.data.repository.DataSyncRepositoryImpl
 import com.iotoms.data.repository.DiscountRepositoryImpl
 import com.iotoms.data.repository.ItemRepositoryImpl
 import com.iotoms.data.repository.PayModeRepositoryImpl
+import com.iotoms.data.repository.QuickPickRepositoryImpl
 import com.iotoms.data.repository.TaxRepositoryImpl
 import com.iotoms.data.repository.UserRepositoryImpl
 import com.iotoms.domain.repository.AccountRepository
@@ -22,6 +23,7 @@ import com.iotoms.domain.repository.DataSyncRepository
 import com.iotoms.domain.repository.DiscountRepository
 import com.iotoms.domain.repository.ItemRepository
 import com.iotoms.domain.repository.PayModeRepository
+import com.iotoms.domain.repository.QuickPickRepository
 import com.iotoms.domain.repository.TaxRepository
 import com.iotoms.domain.repository.UserRepository
 import org.koin.dsl.module
@@ -33,7 +35,7 @@ val repositoryModule = module {
     factory<PayModeRepository> { PayModeRepositoryImpl(get()) }
     factory<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
     factory<ItemRepository> { ItemRepositoryImpl(get(), get()) }
-    factory<DataSyncRepository> { DataSyncRepositoryImpl(get(), get(), get(), get(), get(), get(), get()) }
+    factory<DataSyncRepository> { DataSyncRepositoryImpl(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory<TaxRepository> { TaxRepositoryImpl(get(), get()) }
     factory<AttributeRepository> { AttributeRepositoryImpl(get(), get()) }
     factory<CustomerRepository> { CustomerRepositoryImpl(get(), get()) }
@@ -43,4 +45,5 @@ val repositoryModule = module {
     factory<BusinessRepository> { BusinessRepositoryImpl(get(), get()) }
     factory<CartRepository> { CartRepositoryImpl(get(), get(), get()) }
     factory<DiscountRepository> { DiscountRepositoryImpl(get(), get()) }
+    factory<QuickPickRepository> { QuickPickRepositoryImpl(get(), get(), get()) }
 }

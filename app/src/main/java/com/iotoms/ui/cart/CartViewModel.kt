@@ -3,7 +3,6 @@ package com.iotoms.ui.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.iotoms.data.local.entity.CartEntity
 import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.di.DispatcherProvider
@@ -13,11 +12,17 @@ import com.iotoms.domain.usecase.cart.ClearCartUseCase
 import com.iotoms.domain.usecase.cart.GetCartAsFlowUseCase
 import com.iotoms.domain.usecase.cart.GetCartItemsUseCase
 import com.iotoms.domain.usecase.cart.UpdateCartItemQuantityUseCase
+import com.iotoms.domain.usecase.item.GetPaginatedItemsByItemIdsFromLocalUseCase
 import com.iotoms.domain.usecase.item.GetPaginatedItemsFromLocalUseCase
+import com.iotoms.domain.usecase.quickpick.GetQuickPickFromDbUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,31 +37,76 @@ class CartViewModel(
     private val getCartItemsUseCase: GetCartItemsUseCase,
     private val updateCartItemQuantityUseCase: UpdateCartItemQuantityUseCase,
     private val addGeneralItemToCartUseCase: AddGeneralItemToCartUseCase,
-    private val clearCartUseCase: ClearCartUseCase
+    private val clearCartUseCase: ClearCartUseCase,
+    private val getQuickPickFromDbUseCase: GetQuickPickFromDbUseCase,
+    private val getPaginatedItemsByItemIdsFromLocalUseCase: GetPaginatedItemsByItemIdsFromLocalUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CartUiState>(CartUiState.Idle)
     val uiState: StateFlow<CartUiState> = _uiState
 
-    val pagingItemsFlow = getPaginatedItemsFromLocalUseCase().cachedIn(viewModelScope)
+    private val _itemSource = MutableStateFlow<ItemSource>(ItemSource.All)
+    val itemSource: StateFlow<ItemSource> = _itemSource
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val pagingItemsFlow = _itemSource
+        .flatMapLatest { source ->
+            when (source) {
+                ItemSource.All ->
+                    getPaginatedItemsFromLocalUseCase()
+
+                is ItemSource.ByIds ->
+                    if (source.itemIds.isEmpty())
+                        getPaginatedItemsFromLocalUseCase()
+                    else
+                        getPaginatedItemsByItemIdsFromLocalUseCase(source.itemIds)
+            }
+        }
+        .cachedIn(viewModelScope)
 
     init {
-        observeCart()
+        observeCartWithQuickPicks()
     }
 
-    private fun observeCart() {
+    private fun observeCartWithQuickPicks() {
         viewModelScope.launch(dispatchers.io) {
-            getCartAsFlowUseCase().collectLatest { cartEntity ->
+            combine(
+                getCartAsFlowUseCase(),
+                getQuickPickFromDbUseCase()
+            ) { cartEntity, quickPicks ->
+
                 if (cartEntity == null) {
-                    _uiState.update { CartUiState.Cart(cartItems = emptyList(), cartEntity = null) }
+                    CartUiState.Cart(
+                        cartItems = emptyList(),
+                        cartEntity = null,
+                        quickPicks = quickPicks.map {
+                            QuickPick(
+                                id = it.id,
+                                backgroundColor = it.backgroundColor,
+                                itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() } ?: emptyList(),
+                                label = it.title.orEmpty()
+                            )
+                        }
+                    )
                 } else {
-                    val cartItems = getCartItemsUseCase(cartEntity.transactionNumber)
-                    _uiState.update {
-                        CartUiState.Cart(
-                            cartItems = cartItems,
-                            cartEntity = cartEntity
-                        )
-                    }
+                    val cartItems =
+                        getCartItemsUseCase(cartEntity.transactionNumber)
+
+                    CartUiState.Cart(
+                        cartItems = cartItems,
+                        cartEntity = cartEntity,
+                        quickPicks = quickPicks.map {
+                            QuickPick(
+                                id = it.id,
+                                backgroundColor = it.backgroundColor,
+                                itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() } ?: emptyList(),
+                                label = it.title.orEmpty()
+                            )
+                        }
+                    )
                 }
+            }.collectLatest { state ->
+                _uiState.update { state }
             }
         }
     }
@@ -95,6 +145,10 @@ class CartViewModel(
         viewModelScope.launch(dispatchers.io) {
             clearCartUseCase()
         }
+    }
+
+    fun setItemSource(itemSource: ItemSource) {
+        _itemSource.update { itemSource }
     }
 
 }

@@ -10,6 +10,7 @@ import com.iotoms.data.remote.api.apiRequest
 import com.iotoms.domain.repository.AuthenticationRepository
 import com.iotoms.utils.Result
 import com.iotoms.utils.constants.ApiUrl
+import com.iotoms.utils.extensions.getOrZero
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -32,6 +33,7 @@ class AuthenticationRepositoryImpl(
             if (it is Result.Success) {
                 pref.setBearerToken(it.data.data?.token.orEmpty())
                 pref.setDomainName(it.data.data?.tenant.orEmpty())
+                pref.setRegisterId(registrationRequest.registerId.getOrZero())
             }
         }
     }

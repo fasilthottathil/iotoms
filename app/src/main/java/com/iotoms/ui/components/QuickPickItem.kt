@@ -8,24 +8,53 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
+import com.iotoms.ui.cart.QuickPick
 import com.iotoms.ui.theme.ButtonHeight
+import com.iotoms.ui.theme.NeutralGray50
 import com.iotoms.ui.theme.PrimaryTeal
 
 /**
  * Created by Fasil on 06/11/2025
  */
 @Composable
-fun QuickPickItem() {
+fun QuickPickItem(
+    quickPick: QuickPick,
+    isSelected: Boolean = false,
+    onClick: () -> Unit
+) {
     ElevatedAssistChip(
         modifier = Modifier.height(ButtonHeight),
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         label = {
-            Text("Quick pick item")
+            Text(quickPick.label)
         },
         border = BorderStroke(1.dp, color = PrimaryTeal),
         colors = AssistChipDefaults.elevatedAssistChipColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = if (isSelected) {
+                PrimaryTeal
+            } else {
+                if (quickPick.backgroundColor.isNullOrEmpty()) {
+                    try {
+                        Color(quickPick.backgroundColor!!.toColorInt())
+                    } catch (_: Exception) {
+                        MaterialTheme.colorScheme.background
+                    }
+                } else {
+                    MaterialTheme.colorScheme.background
+                }
+            },
+            labelColor = if (isSelected) {
+                NeutralGray50
+            } else {
+                if (quickPick.id == "All Items") {
+                    PrimaryTeal
+                } else {
+                    Color.Unspecified
+                }
+            }
         )
     )
 }

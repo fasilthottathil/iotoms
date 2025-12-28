@@ -13,6 +13,7 @@ class AppPreference(context: Context) {
         const val KEY_IS_LOGGED_IN = "is_logged_in"
         const val KEY_DOMAIN_NAME = "domain_name"
         const val KEY_BEARER_TOKEN = "bearer_token"
+        const val KEY_REGISTER_ID = "register_id"
     }
 
     fun getBearerToken(): String? {
@@ -35,6 +36,17 @@ class AppPreference(context: Context) {
             putString(KEY_DOMAIN_NAME, domain)
             apply()
         }
+    }
+
+    fun setRegisterId(registerId: Int) {
+        sharedPref.edit {
+            putInt(KEY_REGISTER_ID, registerId)
+            apply()
+        }
+    }
+
+    fun getRegisterId(): Int {
+        return sharedPref.getInt(KEY_REGISTER_ID, 0)
     }
 
 }

@@ -7,6 +7,7 @@ import com.iotoms.domain.repository.CustomerRepository
 import com.iotoms.domain.repository.DataSyncRepository
 import com.iotoms.domain.repository.ItemRepository
 import com.iotoms.domain.repository.PayModeRepository
+import com.iotoms.domain.repository.QuickPickRepository
 import com.iotoms.domain.repository.TaxRepository
 import com.iotoms.domain.repository.UserRepository
 import com.iotoms.utils.Result
@@ -22,7 +23,8 @@ class DataSyncRepositoryImpl(
     private val payModeRepository: PayModeRepository,
     private val taxRepository: TaxRepository,
     private val userRepository: UserRepository,
-    private val businessRepository: BusinessRepository
+    private val businessRepository: BusinessRepository,
+    private val quickPickRepository: QuickPickRepository
 ): DataSyncRepository {
     override suspend fun doSync() = flow {
         emit(Triple(SyncStatus.IN_PROGRESS, 0.1f,itemRepository.getAllItemsPaginated(0) is Result.Success))
@@ -35,6 +37,7 @@ class DataSyncRepositoryImpl(
         emit(Triple(SyncStatus.IN_PROGRESS, 0.5f,attributeRepository.getBrands() is Result.Success))
         emit(Triple(SyncStatus.IN_PROGRESS,0.59f ,attributeRepository.getColors() is Result.Success))
         emit(Triple(SyncStatus.IN_PROGRESS, 0.6f,attributeRepository.getStyles() is Result.Success))
+        emit(Triple(SyncStatus.IN_PROGRESS, 0.65f,quickPickRepository.getAllQuickPicks() is Result.Success))
         emit(Triple(SyncStatus.IN_PROGRESS, 0.8f,attributeRepository.getCategories() is Result.Success))
         emit(Triple(SyncStatus.IN_PROGRESS, 0.81f,attributeRepository.getSubCategories() is Result.Success))
         emit(Triple(SyncStatus.IN_PROGRESS, 0.83f,attributeRepository.getDepartments() is Result.Success))

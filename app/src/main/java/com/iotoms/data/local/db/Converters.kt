@@ -3,6 +3,7 @@ package com.iotoms.data.local.db
 import androidx.room.TypeConverter
 import com.iotoms.data.model.CartDiscount
 import com.iotoms.data.model.response.Brand
+import com.iotoms.data.model.response.QuickPickButtonsItem
 import com.iotoms.data.model.response.Color
 import com.iotoms.data.model.response.FeaturesItem
 import com.iotoms.data.model.response.ImageGallery
@@ -126,6 +127,16 @@ object Converters {
 
     @TypeConverter
     fun toFeaturesItemList(value: String?): List<FeaturesItem?>? {
+        return value?.mapObjectFromJsonString()
+    }
+
+    @TypeConverter
+    fun fromFQuickPickButtonsItemList(value: List<QuickPickButtonsItem?>?): String? {
+        return value?.toStringByGson()
+    }
+
+    @TypeConverter
+    fun toQuickPickButtonsItemList(value: String?): List<QuickPickButtonsItem?>? {
         return value?.mapObjectFromJsonString()
     }
 

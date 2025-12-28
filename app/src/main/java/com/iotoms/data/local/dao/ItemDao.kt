@@ -28,4 +28,8 @@ interface ItemDao {
 
     @Query("SELECT * FROM items")
     fun getPaginatedItems(): PagingSource<Int, ItemEntity>
+
+    @Query("SELECT * FROM items WHERE itemId IN (:ids)")
+    fun getPaginatedItemsByItemIds(ids: List<String>): PagingSource<Int, ItemEntity>
+
 }

@@ -9,6 +9,7 @@ import com.iotoms.data.local.dao.CartDao
 import com.iotoms.data.local.dao.CustomerDao
 import com.iotoms.data.local.dao.ItemDao
 import com.iotoms.data.local.dao.PlanDao
+import com.iotoms.data.local.dao.QuickPickDao
 import com.iotoms.data.local.dao.RegisterDao
 import com.iotoms.data.local.dao.StoreDao
 import com.iotoms.data.local.dao.TaxDao
@@ -25,6 +26,7 @@ import com.iotoms.data.local.entity.DepartmentEntity
 import com.iotoms.data.local.entity.DiscountEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.data.local.entity.PlanEntity
+import com.iotoms.data.local.entity.QuickPickEntity
 import com.iotoms.data.local.entity.RegisterEntity
 import com.iotoms.data.local.entity.SizeEntity
 import com.iotoms.data.local.entity.StoreEntity
@@ -43,7 +45,7 @@ import com.iotoms.data.local.entity.VenueEntity
         ColorEntity::class, DepartmentEntity::class, DiscountEntity::class, ItemEntity::class,
         SizeEntity::class, StyleEntity::class, SubCategoryEntity::class, TaxEntity::class,
         UserEntity::class, CustomerEntity::class, PlanEntity::class, VenueEntity::class,
-        StoreEntity::class, BrandingEntity::class, RegisterEntity::class
+        StoreEntity::class, BrandingEntity::class, RegisterEntity::class, QuickPickEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -61,4 +63,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun storeDao(): StoreDao
     abstract fun brandingDao(): BrandingDao
     abstract fun registerDao(): RegisterDao
+    abstract fun quickPickDao(): QuickPickDao
 }
