@@ -26,10 +26,10 @@ interface CartDao {
     @Upsert
     suspend fun upsertCartItem(cartItemEntity: CartItemEntity)
 
-    @Query("SELECT * FROM cart_items WHERE transactionNumber = :transactionNumber")
+    @Query("SELECT * FROM cart_items WHERE transactionNumber = :transactionNumber ORDER BY id DESC")
     suspend fun getCartItems(transactionNumber: String): List<CartItemEntity>
 
-    @Query("SELECT * FROM cart_items WHERE transactionNumber = :transactionNumber")
+    @Query("SELECT * FROM cart_items WHERE transactionNumber = :transactionNumber ORDER BY id DESC")
     fun getCartItemsFlow(transactionNumber: String): Flow<List<CartItemEntity>>
 
     @Query("SELECT * FROM cart_items WHERE transactionNumber = :transactionNumber AND itemId = :itemId LIMIT 1")

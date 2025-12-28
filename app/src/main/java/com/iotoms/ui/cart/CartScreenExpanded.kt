@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Discount
@@ -25,8 +26,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -62,7 +70,22 @@ fun CartScreenExpanded(
     setQuickPickItemSource: (ItemSource) -> Unit,
     itemSource: State<ItemSource>
 ) {
-    val cartItems = uiState.value.cart.cartItems
+    val focusManager = LocalFocusManager.current
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    val cartItems by remember(searchQuery, uiState.value.cart.cartItems) {
+        derivedStateOf {
+            val items = uiState.value.cart.cartItems
+            if (searchQuery.isBlank()) {
+                items
+            } else {
+                items.filter { item ->
+                    item.itemId.contains(searchQuery, ignoreCase = true) ||
+                            item.name.contains(searchQuery, ignoreCase = true)
+                }
+            }
+        }
+    }
     val quickPicks = uiState.value.cart.quickPicks
     Row(modifier = modifier.fillMaxSize()) {
         Column(
@@ -178,13 +201,28 @@ fun CartScreenExpanded(
                 .weight(0.4f)
         ) {
             OutlinedTextBox(
-                value = "",
-                onValueChange = {},
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(ExtraSmallPadding),
+                    .padding(ExtraSmallPadding)
+                ,
                 placeholder = {
                     Text(text = "Search in cart")
+                },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            modifier = Modifier.clickable(onClick = {
+                                searchQuery = ""
+                                focusManager.clearFocus()
+                            })
+                        )
+                    }
                 }
             )
             LazyColumn(verticalArrangement = Arrangement.spacedBy(ExtraSmallPadding)) {
