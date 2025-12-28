@@ -17,13 +17,13 @@ interface ItemDao {
     @Query("SELECT * FROM items")
     suspend fun getAllItems(): List<ItemEntity>
 
-    @Query("SELECT * FROM items WHERE id = :itemId LIMIT 1")
-    suspend fun getItemById(itemId: Int): ItemEntity?
+    @Query("SELECT * FROM items WHERE itemId = :itemId LIMIT 1")
+    suspend fun getItemById(itemId: String): ItemEntity?
 
     @Query("DELETE FROM items")
     suspend fun clearItems()
 
-    @Query("DELETE FROM items WHERE id = :itemId")
+    @Query("DELETE FROM items WHERE itemId = :itemId")
     suspend fun deleteItemById(itemId: Int)
 
     @Query("SELECT * FROM items")

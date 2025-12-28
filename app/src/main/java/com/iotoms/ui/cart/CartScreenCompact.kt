@@ -46,7 +46,8 @@ fun CartScreenCompact(
     modifier: Modifier,
     canShowGeneralCalculator: Boolean,
     onClickCartGeneralToggle: () -> Unit,
-    pagingItems: LazyPagingItems<ItemEntity>
+    pagingItems: LazyPagingItems<ItemEntity>,
+    onItemClick: (ItemEntity) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
@@ -100,7 +101,7 @@ fun CartScreenCompact(
                             key = { index -> pagingItems[index]?.id ?: index }
                         ) { index ->
                             pagingItems[index]?.let { item ->
-                                Box(modifier = Modifier.padding(ExtraSmallPadding)) {
+                                Box(modifier = Modifier.padding(ExtraSmallPadding).clickable(onClick = { onItemClick(item) })) {
                                     ProductItem(item)
                                 }
                             }

@@ -23,6 +23,7 @@ room = "2.8.3"
 kspVersion = "2.3.1"
 pagingCompose = "3.3.6"
 coilVersion = "3.3.0"
+javaxQualifier = "1"
 
 
 [libraries]

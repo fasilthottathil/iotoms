@@ -64,7 +64,9 @@ fun IotomsNavigation() {
                 val viewModel = koinViewModel<CartViewModel>()
                 CartScreen(
                     uiState = viewModel.uiState.collectAsStateWithLifecycle(),
-                    pagingItems = viewModel.pagingItemsFlow.collectAsLazyPagingItems()
+                    pagingItems = viewModel.pagingItemsFlow.collectAsLazyPagingItems(),
+                    onItemClick = { viewModel.addItemToCart(it) },
+                    onUpdateQuantity = viewModel::updateQuantity
                 )
             }
         }

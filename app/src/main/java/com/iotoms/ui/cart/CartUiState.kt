@@ -1,6 +1,8 @@
 package com.iotoms.ui.cart
 
 import androidx.paging.PagingData
+import com.iotoms.data.local.entity.CartEntity
+import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 
 /**
@@ -8,6 +10,10 @@ import com.iotoms.data.local.entity.ItemEntity
  */
 sealed class CartUiState {
     data object Loading : CartUiState()
+    data class Cart(
+        val cartItems: List<CartItemEntity> = emptyList(),
+        val cartEntity: CartEntity?
+    ) : CartUiState()
     data class Error(val message: String) : CartUiState()
     data object Idle : CartUiState()
 }

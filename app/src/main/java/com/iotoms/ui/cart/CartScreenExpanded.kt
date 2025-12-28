@@ -24,11 +24,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.CartItem
 import com.iotoms.ui.components.OutlinedTextBox
@@ -52,8 +54,15 @@ fun CartScreenExpanded(
     modifier: Modifier,
     canShowGeneralCalculator: Boolean = false,
     onClickCartGeneralToggle: () -> Unit,
-    pagingItems: LazyPagingItems<ItemEntity>
+    pagingItems: LazyPagingItems<ItemEntity>,
+    onItemClick: (ItemEntity) -> Unit,
+    uiState: State<CartUiState>,
+    onUpdateQuantity: (CartItemEntity) -> Unit
 ) {
+    val cartItems = when (val state = uiState.value) {
+        is CartUiState.Cart -> state.cartItems
+        else -> emptyList()
+    }
     Row(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -111,7 +120,11 @@ fun CartScreenExpanded(
                                 key = { index -> pagingItems[index]?.id ?: index }
                             ) { index ->
                                 pagingItems[index]?.let { item ->
-                                    Box(modifier = Modifier.padding(ExtraSmallPadding)) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(ExtraSmallPadding)
+                                            .clickable(onClick = { onItemClick(item) })
+                                    ) {
                                         ProductItem(item)
                                     }
                                 }
@@ -139,14 +152,17 @@ fun CartScreenExpanded(
                 }
             )
             LazyColumn(verticalArrangement = Arrangement.spacedBy(ExtraSmallPadding)) {
-                items(10) {
+                items(
+                    count = cartItems.size,
+                    key = { index -> cartItems[index].id }
+                ) { index ->
                     Box(
                         modifier = Modifier.padding(
                             start = ExtraSmallPadding,
                             end = ExtraSmallPadding
                         )
                     ) {
-                        CartItem()
+                        CartItem(cartItem = cartItems[index], onUpdateQuantity = onUpdateQuantity)
                     }
                 }
                 item {

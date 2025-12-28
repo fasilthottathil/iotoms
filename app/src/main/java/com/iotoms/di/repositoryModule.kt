@@ -4,8 +4,10 @@ import com.iotoms.data.repository.AccountRepositoryImpl
 import com.iotoms.data.repository.AttributeRepositoryImpl
 import com.iotoms.data.repository.AuthenticationRepositoryImpl
 import com.iotoms.data.repository.BusinessRepositoryImpl
+import com.iotoms.data.repository.CartRepositoryImpl
 import com.iotoms.data.repository.CustomerRepositoryImpl
 import com.iotoms.data.repository.DataSyncRepositoryImpl
+import com.iotoms.data.repository.DiscountRepositoryImpl
 import com.iotoms.data.repository.ItemRepositoryImpl
 import com.iotoms.data.repository.PayModeRepositoryImpl
 import com.iotoms.data.repository.TaxRepositoryImpl
@@ -14,8 +16,10 @@ import com.iotoms.domain.repository.AccountRepository
 import com.iotoms.domain.repository.AttributeRepository
 import com.iotoms.domain.repository.AuthenticationRepository
 import com.iotoms.domain.repository.BusinessRepository
+import com.iotoms.domain.repository.CartRepository
 import com.iotoms.domain.repository.CustomerRepository
 import com.iotoms.domain.repository.DataSyncRepository
+import com.iotoms.domain.repository.DiscountRepository
 import com.iotoms.domain.repository.ItemRepository
 import com.iotoms.domain.repository.PayModeRepository
 import com.iotoms.domain.repository.TaxRepository
@@ -37,4 +41,6 @@ val repositoryModule = module {
     factory<UserRepository> { UserRepositoryImpl(get(), get()) }
     factory<AccountRepository> { AccountRepositoryImpl(get(), get()) }
     factory<BusinessRepository> { BusinessRepositoryImpl(get(), get()) }
+    factory<CartRepository> { CartRepositoryImpl(get(), get(), get()) }
+    factory<DiscountRepository> { DiscountRepositoryImpl(get(), get()) }
 }

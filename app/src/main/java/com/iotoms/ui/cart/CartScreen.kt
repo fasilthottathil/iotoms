@@ -38,9 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
-import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import com.iotoms.data.enum.DeviceOrientation
+import com.iotoms.data.local.entity.CartEntity
+import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.cartDrawerItem
 import com.iotoms.ui.theme.ButtonHeight
@@ -48,7 +49,6 @@ import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.LargePadding
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.utils.getDeviceOrientation
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -61,12 +61,16 @@ data object Cart: NavKey
 @Composable
 fun CartScreen(
     uiState: State<CartUiState>,
-    pagingItems: LazyPagingItems<ItemEntity>
+    pagingItems: LazyPagingItems<ItemEntity>,
+    onItemClick: (ItemEntity) -> Unit = {},
+    onUpdateQuantity: (CartItemEntity) -> Unit = {}
 ) {
     val orientation = getDeviceOrientation()
     var canShowGeneralCalculator by rememberSaveable { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    var cartEntity by rememberSaveable { mutableStateOf<CartEntity?>(null) }
+    var cartItems by rememberSaveable { mutableStateOf<List<CartItemEntity>>(emptyList()) }
 
     LaunchedEffect(uiState.value) {
         when(uiState.value) {
@@ -78,6 +82,11 @@ fun CartScreen(
             }
             CartUiState.Loading -> {
 
+            }
+
+            is CartUiState.Cart -> {
+                cartEntity = (uiState.value as CartUiState.Cart).cartEntity
+                cartItems = (uiState.value as CartUiState.Cart).cartItems
             }
         }
     }
@@ -184,7 +193,8 @@ fun CartScreen(
                             canShowGeneralCalculator = canShowGeneralCalculator,
                             onClickCartGeneralToggle = {
                                 canShowGeneralCalculator = !canShowGeneralCalculator
-                            }
+                            },
+                            onItemClick = onItemClick
                         )
                     } else {
                         CartScreenExpanded(
@@ -193,7 +203,10 @@ fun CartScreen(
                             canShowGeneralCalculator = canShowGeneralCalculator,
                             onClickCartGeneralToggle = {
                                 canShowGeneralCalculator = !canShowGeneralCalculator
-                            }
+                            },
+                            onItemClick = onItemClick,
+                            uiState = uiState,
+                            onUpdateQuantity = onUpdateQuantity
                         )
                     }
                 }

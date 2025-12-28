@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.work.Configuration
+import com.iotoms.di.appModule
 import com.iotoms.di.networkModule
 import com.iotoms.di.repositoryModule
 import com.iotoms.di.storageModule
@@ -30,6 +31,7 @@ class App : Application() , Configuration.Provider{
             workManagerFactory()
             androidLogger()
             modules(
+                appModule,
                 storageModule,
                 networkModule,
                 repositoryModule,

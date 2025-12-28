@@ -3,11 +3,13 @@ package com.iotoms.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.iotoms.data.enum.TransactionType
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 05/12/2025
  */
 @Entity(tableName = "cart")
+@Serializable
 data class CartEntity(
     @PrimaryKey(autoGenerate = false)
     var transactionNumber: String,

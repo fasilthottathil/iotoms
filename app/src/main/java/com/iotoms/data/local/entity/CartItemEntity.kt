@@ -4,11 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.iotoms.data.enum.TransactionType
 import com.iotoms.data.model.CartDiscount
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 29/11/2025
  */
 @Entity(tableName = "cart_items")
+@Serializable
 data class CartItemEntity(
     @PrimaryKey(autoGenerate = false)
     var id: String,
@@ -18,6 +20,7 @@ data class CartItemEntity(
     var quantity: Double,
     var saleQuantity: Double? = null,
     var price: Double,
+    var total: Double,
     var modifiedPrice: Double? = null,
     var transactionType: TransactionType = TransactionType.SALE,
     var transactionNumber: String,
