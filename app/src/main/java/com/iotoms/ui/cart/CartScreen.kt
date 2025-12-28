@@ -1,5 +1,6 @@
 package com.iotoms.ui.cart
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +37,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.NavKey
 import androidx.paging.compose.LazyPagingItems
 import com.iotoms.data.enum.DeviceOrientation
-import com.iotoms.data.local.entity.CartEntity
 import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
+import com.iotoms.ui.components.ConfirmationDialog
 import com.iotoms.ui.components.cartDrawerItem
 import com.iotoms.ui.theme.ButtonHeight
 import com.iotoms.ui.theme.ExtraSmallPadding
@@ -63,32 +64,36 @@ fun CartScreen(
     uiState: State<CartUiState>,
     pagingItems: LazyPagingItems<ItemEntity>,
     onItemClick: (ItemEntity) -> Unit = {},
-    onUpdateQuantity: (CartItemEntity) -> Unit = {}
+    onGeneralItemClick: (String) -> Unit = {},
+    onUpdateQuantity: (CartItemEntity) -> Unit = {},
+    onClearCart: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val orientation = getDeviceOrientation()
     var canShowGeneralCalculator by rememberSaveable { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var cartEntity by rememberSaveable { mutableStateOf<CartEntity?>(null) }
-    var cartItems by rememberSaveable { mutableStateOf<List<CartItemEntity>>(emptyList()) }
+    var showClearCartConfirmDialog by rememberSaveable { mutableStateOf(false) }
+    val cartItems = when (val state = uiState.value) {
+        is CartUiState.Cart -> state.cartItems
+        else -> emptyList()
+    }
 
-    LaunchedEffect(uiState.value) {
-        when(uiState.value) {
-            is CartUiState.Error -> {
-
+    if (showClearCartConfirmDialog) {
+        ConfirmationDialog(
+            title = "Clear Cart",
+            message = "Are you sure you want to clear the cart?",
+            onYes = {
+                onClearCart()
+                showClearCartConfirmDialog = false
+            },
+            onNo = {
+                showClearCartConfirmDialog = false
+            },
+            onDismiss = {
+                showClearCartConfirmDialog = false
             }
-            CartUiState.Idle -> {
-
-            }
-            CartUiState.Loading -> {
-
-            }
-
-            is CartUiState.Cart -> {
-                cartEntity = (uiState.value as CartUiState.Cart).cartEntity
-                cartItems = (uiState.value as CartUiState.Cart).cartItems
-            }
-        }
+        )
     }
 
     ModalNavigationDrawer(
@@ -174,7 +179,13 @@ fun CartScreen(
                             Spacer(modifier = Modifier.width(LargePadding))
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.clickable(onClick = {})
+                                modifier = Modifier.clickable(onClick = {
+                                    if (cartItems.isNotEmpty()) {
+                                        showClearCartConfirmDialog = true
+                                    } else {
+                                        Toast.makeText(context, "Cart is already empty", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.RemoveShoppingCart,
@@ -194,7 +205,9 @@ fun CartScreen(
                             onClickCartGeneralToggle = {
                                 canShowGeneralCalculator = !canShowGeneralCalculator
                             },
-                            onItemClick = onItemClick
+                            onItemClick = onItemClick,
+                            onGeneralItemClick = onGeneralItemClick,
+                            uiState = uiState,
                         )
                     } else {
                         CartScreenExpanded(
@@ -206,7 +219,8 @@ fun CartScreen(
                             },
                             onItemClick = onItemClick,
                             uiState = uiState,
-                            onUpdateQuantity = onUpdateQuantity
+                            onUpdateQuantity = onUpdateQuantity,
+                            onGeneralItemClick = onGeneralItemClick
                         )
                     }
                 }

@@ -56,6 +56,7 @@ fun CartScreenExpanded(
     onClickCartGeneralToggle: () -> Unit,
     pagingItems: LazyPagingItems<ItemEntity>,
     onItemClick: (ItemEntity) -> Unit,
+    onGeneralItemClick: (String) -> Unit,
     uiState: State<CartUiState>,
     onUpdateQuantity: (CartItemEntity) -> Unit
 ) {
@@ -98,7 +99,7 @@ fun CartScreenExpanded(
             }
             Spacer(modifier = Modifier.height(SmallPadding))
             if (canShowGeneralCalculator) {
-                GeneralItemCalculatorScreen(onClickAdd = { })
+                GeneralItemCalculatorScreen(onClickAdd = onGeneralItemClick, uiState = uiState)
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(SmallPadding)) {
                     items(10) {

@@ -15,6 +15,7 @@ import com.iotoms.ui.auth.login.LoginViewModel
 import com.iotoms.ui.cart.Cart
 import com.iotoms.ui.cart.CartScreen
 import com.iotoms.ui.cart.CartViewModel
+import com.iotoms.ui.cart.GeneralItemCalculatorScreen
 import com.iotoms.ui.sync.DataSync
 import com.iotoms.ui.sync.DataSyncDialogScreen
 import com.iotoms.ui.sync.DataSyncViewModel
@@ -66,7 +67,9 @@ fun IotomsNavigation() {
                     uiState = viewModel.uiState.collectAsStateWithLifecycle(),
                     pagingItems = viewModel.pagingItemsFlow.collectAsLazyPagingItems(),
                     onItemClick = { viewModel.addItemToCart(it) },
-                    onUpdateQuantity = viewModel::updateQuantity
+                    onUpdateQuantity = viewModel::updateQuantity,
+                    onGeneralItemClick = viewModel::addGeneralItemToCart,
+                    onClearCart = viewModel::clearCart
                 )
             }
         }

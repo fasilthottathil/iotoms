@@ -12,6 +12,7 @@ import com.iotoms.data.model.CartDiscount
 import com.iotoms.domain.repository.CartRepository
 import com.iotoms.domain.repository.DiscountRepository
 import com.iotoms.domain.repository.TaxRepository
+import com.iotoms.utils.constants.Constants.GENERAL_ITEM_ID
 import com.iotoms.utils.extensions.getOrZero
 import kotlinx.coroutines.flow.Flow
 
@@ -29,11 +30,12 @@ class CartRepositoryImpl(
             cartEntity = createCart()
         } else {
             val cartItemEntity =
-                appDatabase.cartDao().getCartItemByItemIdAndTxnNumber(
+                appDatabase.cartDao().getCartItemByItemIdAndTxnNumberAndSellPrice(
                     transactionNumber = cartEntity.transactionNumber,
-                    itemId = itemEntity.itemId
+                    itemId = itemEntity.itemId,
+                    sellingPrice = itemEntity.sellingPrice.getOrZero()
                 )
-            if (cartItemEntity != null) {
+            if (cartItemEntity != null && itemEntity.itemId != GENERAL_ITEM_ID) {
                 cartItemEntity.quantity += 1.0
                 updateQuantity(cartItemEntity)
                 return
@@ -60,6 +62,15 @@ class CartRepositoryImpl(
         appDatabase.cartDao().upsertCartItem(cartItemEntity)
         calculateTotals()
 
+    }
+
+    override suspend fun addGeneralItemToCart(name: String, price: Double) {
+        val itemEntity = requireNotNull(appDatabase.itemDao().getItemById(GENERAL_ITEM_ID)) {
+            "General item not found in database."
+        }
+        itemEntity.sellingPrice = price
+        itemEntity.itemName = name
+        addItemToCart(itemEntity)
     }
 
     private suspend fun calculateTaxAndDiscounts(
@@ -112,9 +123,10 @@ class CartRepositoryImpl(
             deleteCartItem(cartItemEntity)
             return
         }
-        val cartItemEntityFromDb = requireNotNull(appDatabase.cartDao().getCartItemByItemIdAndTxnNumber(
+        val cartItemEntityFromDb = requireNotNull(appDatabase.cartDao().getCartItemByItemIdAndTxnNumberAndSellPrice(
             cartEntity.transactionNumber,
-            cartItemEntity.itemId
+            cartItemEntity.itemId,
+            cartItemEntity.price
         )) {
             "Cart item not found for itemId: ${cartItemEntity.itemId} and transactionNumber: ${cartEntity.transactionNumber}"
         }
@@ -133,6 +145,10 @@ class CartRepositoryImpl(
     override suspend fun deleteCartItem(cartItemEntity: CartItemEntity) {
         appDatabase.cartDao().deleteCartItem(cartItemEntity)
         calculateTotals()
+    }
+
+    override suspend fun clearCart() {
+        appDatabase.cartDao().clearCart()
     }
 
     override fun getCart(): Flow<CartEntity?> {

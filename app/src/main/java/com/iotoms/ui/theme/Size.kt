@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 val TextBoxMinHeight = 56.dp
 val ButtonHeight = 48.dp
 val AppBarHeight = 56.dp
+val MediumBarHeight = 86.dp
 val LargeAppBarHeight = 128.dp
 val BottomBarHeight = 56.dp
 val CardElevation = 4.dp

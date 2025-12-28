@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.Flow
  */
 interface CartRepository {
     suspend fun addItemToCart(itemEntity: ItemEntity)
+    suspend fun addGeneralItemToCart(name: String, price: Double)
     suspend fun updateQuantity(cartItemEntity: CartItemEntity)
     suspend fun deleteCartItem(cartItemEntity: CartItemEntity)
+    suspend fun clearCart()
     suspend fun calculateTotals()
     fun getCart(): Flow<CartEntity?>
     suspend fun getCartItems(transactionNumber: String): List<CartItemEntity>

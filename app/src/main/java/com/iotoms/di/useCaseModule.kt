@@ -1,7 +1,9 @@
 package com.iotoms.di
 
 import com.iotoms.domain.usecase.auth.RegisterUseCase
+import com.iotoms.domain.usecase.cart.AddGeneralItemToCartUseCase
 import com.iotoms.domain.usecase.cart.AddItemToCartUseCase
+import com.iotoms.domain.usecase.cart.ClearCartUseCase
 import com.iotoms.domain.usecase.cart.GetCartAsFlowUseCase
 import com.iotoms.domain.usecase.cart.GetCartItemsUseCase
 import com.iotoms.domain.usecase.cart.UpdateCartItemQuantityUseCase
@@ -24,4 +26,6 @@ val useCaseModule = module {
     factory { GetCartAsFlowUseCase(get()) }
     factory { GetCartItemsUseCase(get()) }
     factory { UpdateCartItemQuantityUseCase(get()) }
+    factory { AddGeneralItemToCartUseCase(get()) }
+    factory { ClearCartUseCase(get()) }
 }

@@ -7,7 +7,9 @@ import com.iotoms.data.local.entity.CartEntity
 import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.di.DispatcherProvider
+import com.iotoms.domain.usecase.cart.AddGeneralItemToCartUseCase
 import com.iotoms.domain.usecase.cart.AddItemToCartUseCase
+import com.iotoms.domain.usecase.cart.ClearCartUseCase
 import com.iotoms.domain.usecase.cart.GetCartAsFlowUseCase
 import com.iotoms.domain.usecase.cart.GetCartItemsUseCase
 import com.iotoms.domain.usecase.cart.UpdateCartItemQuantityUseCase
@@ -28,7 +30,9 @@ class CartViewModel(
     private val addItemToCartUseCase: AddItemToCartUseCase,
     private val getCartAsFlowUseCase: GetCartAsFlowUseCase,
     private val getCartItemsUseCase: GetCartItemsUseCase,
-    private val updateCartItemQuantityUseCase: UpdateCartItemQuantityUseCase
+    private val updateCartItemQuantityUseCase: UpdateCartItemQuantityUseCase,
+    private val addGeneralItemToCartUseCase: AddGeneralItemToCartUseCase,
+    private val clearCartUseCase: ClearCartUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CartUiState>(CartUiState.Idle)
     val uiState: StateFlow<CartUiState> = _uiState
@@ -68,8 +72,28 @@ class CartViewModel(
             runCatching {
                 updateCartItemQuantityUseCase.invoke(cartItemEntity)
             }.onFailure { e ->
+                _uiState.update { CartUiState.Error("") }
+                delay(100)
                 _uiState.update { CartUiState.Error(e.message ?: "Unknown Error") }
             }
+        }
+    }
+
+    fun addGeneralItemToCart(amount: String) {
+        viewModelScope.launch(dispatchers.io) {
+            runCatching {
+                addGeneralItemToCartUseCase.invoke("General Item", amount.toDouble())
+            }.onFailure { e ->
+                _uiState.update { CartUiState.Error("") }
+                delay(100)
+                _uiState.update { CartUiState.Error(e.message ?: "Unknown Error") }
+            }
+        }
+    }
+
+    fun clearCart() {
+        viewModelScope.launch(dispatchers.io) {
+            clearCartUseCase()
         }
     }
 

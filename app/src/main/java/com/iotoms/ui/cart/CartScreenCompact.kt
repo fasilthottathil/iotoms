@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Discount
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,9 @@ fun CartScreenCompact(
     canShowGeneralCalculator: Boolean,
     onClickCartGeneralToggle: () -> Unit,
     pagingItems: LazyPagingItems<ItemEntity>,
-    onItemClick: (ItemEntity) -> Unit
+    onItemClick: (ItemEntity) -> Unit,
+    onGeneralItemClick: (String) -> Unit,
+    uiState: State<CartUiState>
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
@@ -79,7 +82,7 @@ fun CartScreenCompact(
         }
         Spacer(modifier = Modifier.height(SmallPadding))
         if (canShowGeneralCalculator) {
-            GeneralItemCalculatorScreen(onClickAdd = { })
+            GeneralItemCalculatorScreen(onClickAdd = onGeneralItemClick, uiState = uiState)
         } else {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(SmallPadding)) {
                 items(10) {

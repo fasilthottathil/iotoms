@@ -13,6 +13,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,25 +22,40 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.navigation3.runtime.NavKey
+import com.iotoms.ui.components.ErrorOutlinedBox
 import com.iotoms.ui.components.FilledButton
 import com.iotoms.ui.components.OutlinedButton
 import com.iotoms.ui.components.OutlinedTextBox
-import com.iotoms.ui.theme.AppBarHeight
+import com.iotoms.ui.theme.MediumBarHeight
 import com.iotoms.ui.theme.MediumPadding
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.utils.extensions.formatAmount
+import kotlinx.serialization.Serializable
 
 /**
  * Created by Fasil on 07/11/2025
  */
 @Composable
-fun GeneralItemCalculatorScreen(onClickAdd: (String) -> Unit) {
+fun GeneralItemCalculatorScreen(uiState: State<CartUiState>, onClickAdd: (String) -> Unit) {
     var amount by rememberSaveable { mutableStateOf("") }
+    var error by rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(uiState.value) {
+        error = if (uiState.value is CartUiState.Error) {
+            (uiState.value as CartUiState.Error).message
+        } else {
+            ""
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(MediumPadding)
     ) {
+        if (error.isNotEmpty()) {
+            ErrorOutlinedBox(error = error, onDismiss = { error = "" })
+            Spacer(modifier = Modifier.Companion.height(MediumPadding))
+        }
         OutlinedTextBox(
             value = amount,
             onValueChange = { },
@@ -63,7 +80,9 @@ fun GeneralItemCalculatorScreen(onClickAdd: (String) -> Unit) {
                 repeat(3) { col ->
                     val number = (row * 3 + col + 1).toString()
                     OutlinedButton(
-                        modifier = Modifier.height(AppBarHeight).weight(1f),
+                        modifier = Modifier
+                            .height(MediumBarHeight)
+                            .weight(1f),
                         text = number,
                         onClick = {
                             amount = (amount + number).formatAmount()
@@ -80,7 +99,9 @@ fun GeneralItemCalculatorScreen(onClickAdd: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) {
             FilledButton(
-                modifier = Modifier.height(AppBarHeight).weight(1f),
+                modifier = Modifier
+                    .height(MediumBarHeight)
+                    .weight(1f),
                 text = "",
                 onClick = {
                     if (amount.isNotEmpty()) {
@@ -92,17 +113,24 @@ fun GeneralItemCalculatorScreen(onClickAdd: (String) -> Unit) {
                 }
             )
             OutlinedButton(
-                modifier = Modifier.height(AppBarHeight).weight(1f),
+                modifier = Modifier
+                    .height(MediumBarHeight)
+                    .weight(1f),
                 text = "0",
                 onClick = {
                     amount = (amount + "0").formatAmount()
                 }
             )
             FilledButton(
-                modifier = Modifier.height(AppBarHeight).weight(1f),
+                modifier = Modifier
+                    .height(MediumBarHeight)
+                    .weight(1f),
                 text = "",
                 onClick = {
-                    onClickAdd(amount)
+                    if (amount.isNotEmpty()) {
+                        onClickAdd(amount)
+                        amount = ""
+                    }
                 },
                 leadingIcon = {
                     Text("ADD")

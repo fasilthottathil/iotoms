@@ -47,10 +47,10 @@ data class ItemEntity(
     val type: String? = null,
 
     @field:SerializedName("itemName")
-    val itemName: String? = null,
+    var itemName: String? = null,
 
     @field:SerializedName("sellingPrice")
-    val sellingPrice: Double? = null,
+    var sellingPrice: Double? = null,
 
     @field:SerializedName("sizeId")
     val sizeId: Int? = null,
