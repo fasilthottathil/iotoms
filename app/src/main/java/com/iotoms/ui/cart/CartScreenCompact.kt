@@ -54,10 +54,7 @@ fun CartScreenCompact(
     setQuickPickItemSource: (ItemSource) -> Unit,
     itemSource: State<ItemSource>
 ) {
-    val quickPicks = when (val state = uiState.value) {
-        is CartUiState.Cart -> state.quickPicks
-        else -> emptyList()
-    }
+    val quickPicks = uiState.value.cart.quickPicks
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier

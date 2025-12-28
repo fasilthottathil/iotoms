@@ -76,10 +76,8 @@ fun CartScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var showClearCartConfirmDialog by rememberSaveable { mutableStateOf(false) }
-    val cartItems = when (val state = uiState.value) {
-        is CartUiState.Cart -> state.cartItems
-        else -> emptyList()
-    }
+    val cartItems = uiState.value.cart.cartItems
+    val regInfo = uiState.value.cart.regInfo
 
     if (showClearCartConfirmDialog) {
         ConfirmationDialog(
@@ -103,7 +101,7 @@ fun CartScreen(
         drawerContent = {
             ModalDrawerSheet {
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                   cartDrawerItem()
+                   cartDrawerItem(regInfo)
                 }
                 Row(
                     modifier = Modifier

@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.iotoms.data.local.entity.CartItemEntity
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.di.DispatcherProvider
+import com.iotoms.domain.usecase.business.register.GetRegisterInfoUseCase
 import com.iotoms.domain.usecase.cart.AddGeneralItemToCartUseCase
 import com.iotoms.domain.usecase.cart.AddItemToCartUseCase
 import com.iotoms.domain.usecase.cart.ClearCartUseCase
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,9 +39,10 @@ class CartViewModel(
     private val addGeneralItemToCartUseCase: AddGeneralItemToCartUseCase,
     private val clearCartUseCase: ClearCartUseCase,
     private val getQuickPickFromDbUseCase: GetQuickPickFromDbUseCase,
-    private val getPaginatedItemsByItemIdsFromLocalUseCase: GetPaginatedItemsByItemIdsFromLocalUseCase
+    private val getPaginatedItemsByItemIdsFromLocalUseCase: GetPaginatedItemsByItemIdsFromLocalUseCase,
+    private val getRegisterInfoUseCase: GetRegisterInfoUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<CartUiState>(CartUiState.Idle)
+    private val _uiState = MutableStateFlow<CartUiState>(CartUiState())
     val uiState: StateFlow<CartUiState> = _uiState
 
     private val _itemSource = MutableStateFlow<ItemSource>(ItemSource.All)
@@ -72,37 +73,61 @@ class CartViewModel(
         viewModelScope.launch(dispatchers.io) {
             combine(
                 getCartAsFlowUseCase(),
-                getQuickPickFromDbUseCase()
-            ) { cartEntity, quickPicks ->
+                getQuickPickFromDbUseCase(),
+                getRegisterInfoUseCase()
+            ) { cartEntity, quickPicks, regInfo ->
 
                 if (cartEntity == null) {
-                    CartUiState.Cart(
-                        cartItems = emptyList(),
-                        cartEntity = null,
-                        quickPicks = quickPicks.map {
-                            QuickPick(
-                                id = it.id,
-                                backgroundColor = it.backgroundColor,
-                                itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() } ?: emptyList(),
-                                label = it.title.orEmpty()
+                    CartUiState(
+                        isLoading = false,
+                        cart = CartState(
+                            cartItems = emptyList(),
+                            cartEntity = null,
+                            quickPicks = quickPicks.map {
+                                QuickPick(
+                                    id = it.id,
+                                    backgroundColor = it.backgroundColor,
+                                    itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() }
+                                        ?: emptyList(),
+                                    label = it.title.orEmpty()
+                                )
+                            },
+                            regInfo = RegisterInfo(
+                                id = regInfo.id,
+                                registerName = regInfo.name,
+                                storeId = regInfo.store?.id,
+                                storeName = regInfo.store?.name,
+                                venueId = regInfo.store?.venue?.id,
+                                venueName = regInfo.store?.venue?.name
                             )
-                        }
+                        )
                     )
                 } else {
                     val cartItems =
                         getCartItemsUseCase(cartEntity.transactionNumber)
 
-                    CartUiState.Cart(
-                        cartItems = cartItems,
-                        cartEntity = cartEntity,
-                        quickPicks = quickPicks.map {
-                            QuickPick(
-                                id = it.id,
-                                backgroundColor = it.backgroundColor,
-                                itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() } ?: emptyList(),
-                                label = it.title.orEmpty()
+                    CartUiState(
+                        cart = CartState(
+                            cartItems = cartItems,
+                            cartEntity = cartEntity,
+                            quickPicks = quickPicks.map {
+                                QuickPick(
+                                    id = it.id,
+                                    backgroundColor = it.backgroundColor,
+                                    itemIds = it.buttons?.map { button -> button?.itemId.orEmpty() }
+                                        ?: emptyList(),
+                                    label = it.title.orEmpty()
+                                )
+                            },
+                            regInfo = RegisterInfo(
+                                id = regInfo.id,
+                                registerName = regInfo.name,
+                                storeId = regInfo.store?.id,
+                                storeName = regInfo.store?.name,
+                                venueId = regInfo.store?.venue?.id,
+                                venueName = regInfo.store?.venue?.name
                             )
-                        }
+                        )
                     )
                 }
             }.collectLatest { state ->
@@ -122,9 +147,9 @@ class CartViewModel(
             runCatching {
                 updateCartItemQuantityUseCase.invoke(cartItemEntity)
             }.onFailure { e ->
-                _uiState.update { CartUiState.Error("") }
+                _uiState.update { it.copy(errorMessage = "") }
                 delay(100)
-                _uiState.update { CartUiState.Error(e.message ?: "Unknown Error") }
+                _uiState.update { it.copy(errorMessage = e.message ?: "Unknown Error") }
             }
         }
     }
@@ -134,9 +159,9 @@ class CartViewModel(
             runCatching {
                 addGeneralItemToCartUseCase.invoke("General Item", amount.toDouble())
             }.onFailure { e ->
-                _uiState.update { CartUiState.Error("") }
+                _uiState.update { it.copy(errorMessage = "") }
                 delay(100)
-                _uiState.update { CartUiState.Error(e.message ?: "Unknown Error") }
+                _uiState.update { it.copy(errorMessage = e.message ?: "Unknown Error") }
             }
         }
     }

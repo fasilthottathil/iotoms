@@ -62,14 +62,8 @@ fun CartScreenExpanded(
     setQuickPickItemSource: (ItemSource) -> Unit,
     itemSource: State<ItemSource>
 ) {
-    val cartItems = when (val state = uiState.value) {
-        is CartUiState.Cart -> state.cartItems
-        else -> emptyList()
-    }
-    val quickPicks = when (val state = uiState.value) {
-        is CartUiState.Cart -> state.quickPicks
-        else -> emptyList()
-    }
+    val cartItems = uiState.value.cart.cartItems
+    val quickPicks = uiState.value.cart.quickPicks
     Row(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier

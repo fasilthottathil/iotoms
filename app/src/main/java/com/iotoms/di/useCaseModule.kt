@@ -1,6 +1,7 @@
 package com.iotoms.di
 
 import com.iotoms.domain.usecase.auth.RegisterUseCase
+import com.iotoms.domain.usecase.business.register.GetRegisterInfoUseCase
 import com.iotoms.domain.usecase.cart.AddGeneralItemToCartUseCase
 import com.iotoms.domain.usecase.cart.AddItemToCartUseCase
 import com.iotoms.domain.usecase.cart.ClearCartUseCase
@@ -32,4 +33,5 @@ val useCaseModule = module {
     factory { AddGeneralItemToCartUseCase(get()) }
     factory { ClearCartUseCase(get()) }
     factory { GetQuickPickFromDbUseCase(get()) }
+    factory { GetRegisterInfoUseCase(get()) }
 }

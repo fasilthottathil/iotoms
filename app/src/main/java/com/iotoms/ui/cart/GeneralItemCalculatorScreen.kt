@@ -41,11 +41,7 @@ fun GeneralItemCalculatorScreen(uiState: State<CartUiState>, onClickAdd: (String
     var amount by rememberSaveable { mutableStateOf("") }
     var error by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(uiState.value) {
-        error = if (uiState.value is CartUiState.Error) {
-            (uiState.value as CartUiState.Error).message
-        } else {
-            ""
-        }
+        error = uiState.value.errorMessage.orEmpty()
     }
     Column(
         modifier = Modifier

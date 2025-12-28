@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.iotoms.data.local.entity.RegisterEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by Fasil on 27/12/2025
@@ -24,5 +25,8 @@ interface RegisterDao {
 
     @Query("DELETE FROM registers WHERE id = :id")
     suspend fun deleteRegisterById(id: Int)
+
+    @Query("SELECT * FROM registers WHERE id = :id")
+    fun getRegisterByIdFlow(id: Int): Flow<RegisterEntity>
 
 }

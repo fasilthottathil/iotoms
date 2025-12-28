@@ -1,6 +1,8 @@
 package com.iotoms.data.repository
 
 import com.iotoms.data.local.db.AppDatabase
+import com.iotoms.data.local.entity.RegisterEntity
+import com.iotoms.data.local.pref.AppPreference
 import com.iotoms.data.mapper.toBrandingEntity
 import com.iotoms.data.mapper.toRegisterEntity
 import com.iotoms.data.mapper.toStoreEntity
@@ -16,13 +18,15 @@ import com.iotoms.utils.Result
 import com.iotoms.utils.constants.ApiUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by Fasil on 27/12/2025
  */
 class BusinessRepositoryImpl(
     private val client: HttpClient,
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val appPreference: AppPreference
 ) : BusinessRepository {
     override suspend fun getAllVenues(): Result<List<VenueResponseItem>, ApiError> {
         return apiRequest<List<VenueResponseItem>> {
@@ -77,5 +81,10 @@ class BusinessRepositoryImpl(
                 }
             }
         }
+    }
+
+    override fun getRegisterInfo(): Flow<RegisterEntity> {
+        requireNotNull(appPreference.getRegisterId())
+        return appDatabase.registerDao().getRegisterByIdFlow(appPreference.getRegisterId())
     }
 }

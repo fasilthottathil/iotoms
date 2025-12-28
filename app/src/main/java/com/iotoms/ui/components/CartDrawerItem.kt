@@ -1,13 +1,16 @@
 package com.iotoms.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
@@ -18,31 +21,55 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.iotoms.R
+import com.iotoms.ui.cart.RegisterInfo
 import com.iotoms.ui.theme.ButtonHeight
 import com.iotoms.ui.theme.ExtraSmallPadding
+import com.iotoms.ui.theme.MediumPadding
+import com.iotoms.ui.theme.NeutralGray50
 import com.iotoms.ui.theme.PrimaryTeal
 import com.iotoms.ui.theme.PrimaryTealLight
 
 /**
  * Created by Fasil on 08/11/2025
  */
-fun LazyListScope.cartDrawerItem() {
+fun LazyListScope.cartDrawerItem(regInfo: RegisterInfo?) {
     item {
-        Box(
-            modifier = Modifier.fillMaxWidth().height(150.dp).background(
+        Column(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp).background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         PrimaryTeal,
                         PrimaryTealLight
                     )
                 )
-            ),
-            contentAlignment = Alignment.Center
+            ).padding(ExtraSmallPadding)
         ) {
-            Text(stringResource(R.string.app_name))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(R.drawable.iotoms_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+                Text(stringResource(R.string.app_name), color = NeutralGray50)
+            }
+            Spacer(Modifier.height(MediumPadding))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Venue: ", fontWeight = FontWeight.Bold, color = NeutralGray50)
+                Text("${regInfo?.venueName}", color = NeutralGray50)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Store: ", fontWeight = FontWeight.Bold, color = NeutralGray50)
+                Text("${regInfo?.storeName}", color = NeutralGray50)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Register: ", fontWeight = FontWeight.Bold, color = NeutralGray50)
+                Text("${regInfo?.registerName} - (${regInfo?.id})", color = NeutralGray50)
+            }
         }
     }
     item {

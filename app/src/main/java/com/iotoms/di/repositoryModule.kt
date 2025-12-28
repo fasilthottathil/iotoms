@@ -42,7 +42,7 @@ val repositoryModule = module {
     factory<PayModeRepository> { PayModeRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get(), get()) }
     factory<AccountRepository> { AccountRepositoryImpl(get(), get()) }
-    factory<BusinessRepository> { BusinessRepositoryImpl(get(), get()) }
+    factory<BusinessRepository> { BusinessRepositoryImpl(get(), get(), get()) }
     factory<CartRepository> { CartRepositoryImpl(get(), get(), get()) }
     factory<DiscountRepository> { DiscountRepositoryImpl(get(), get()) }
     factory<QuickPickRepository> { QuickPickRepositoryImpl(get(), get(), get()) }
