@@ -28,6 +28,10 @@ class CartRepositoryImpl(
         var cartEntity = appDatabase.cartDao().getCart()
         if (cartEntity == null) {
             cartEntity = createCart()
+            if (itemEntity.itemId == GENERAL_ITEM_ID) {
+                addGeneralItemToCart(itemEntity.itemName ?: "GENERAL", itemEntity.sellingPrice.getOrZero())
+                return
+            }
         } else {
             val cartItemEntity =
                 appDatabase.cartDao().getCartItemByItemIdAndTxnNumberAndSellPrice(

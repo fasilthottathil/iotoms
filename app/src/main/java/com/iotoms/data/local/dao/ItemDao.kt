@@ -32,4 +32,7 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE itemId IN (:ids)")
     fun getPaginatedItemsByItemIds(ids: List<String>): PagingSource<Int, ItemEntity>
 
+    @Query("SELECT * FROM items WHERE itemName LIKE '%' || :query || '%' OR itemId LIKE '%' || :query ||'%'")
+    fun searchItems(query: String): PagingSource<Int, ItemEntity>
+
 }

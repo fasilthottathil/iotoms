@@ -68,7 +68,8 @@ fun CartScreenExpanded(
     uiState: State<CartUiState>,
     onUpdateQuantity: (CartItemEntity) -> Unit,
     setQuickPickItemSource: (ItemSource) -> Unit,
-    itemSource: State<ItemSource>
+    itemSource: State<ItemSource>,
+    onClickSearch: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -117,7 +118,8 @@ fun CartScreenExpanded(
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    tint = NeutralGray50
+                    tint = NeutralGray50,
+                    modifier = Modifier.clickable(onClick = onClickSearch)
                 )
             }
             Spacer(modifier = Modifier.height(SmallPadding))

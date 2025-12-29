@@ -42,7 +42,7 @@ class CartViewModel(
     private val getPaginatedItemsByItemIdsFromLocalUseCase: GetPaginatedItemsByItemIdsFromLocalUseCase,
     private val getRegisterInfoUseCase: GetRegisterInfoUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<CartUiState>(CartUiState())
+    private val _uiState = MutableStateFlow(CartUiState())
     val uiState: StateFlow<CartUiState> = _uiState
 
     private val _itemSource = MutableStateFlow<ItemSource>(ItemSource.All)

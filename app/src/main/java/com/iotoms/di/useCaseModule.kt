@@ -10,6 +10,7 @@ import com.iotoms.domain.usecase.cart.GetCartItemsUseCase
 import com.iotoms.domain.usecase.cart.UpdateCartItemQuantityUseCase
 import com.iotoms.domain.usecase.item.GetPaginatedItemsByItemIdsFromLocalUseCase
 import com.iotoms.domain.usecase.item.GetPaginatedItemsFromLocalUseCase
+import com.iotoms.domain.usecase.item.SearchItemFromLocalUseCase
 import com.iotoms.domain.usecase.paymode.GetPayModesUseCase
 import com.iotoms.domain.usecase.plan.GetAllPlansUseCase
 import com.iotoms.domain.usecase.quickpick.GetQuickPickFromDbUseCase
@@ -34,4 +35,5 @@ val useCaseModule = module {
     factory { ClearCartUseCase(get()) }
     factory { GetQuickPickFromDbUseCase(get()) }
     factory { GetRegisterInfoUseCase(get()) }
+    factory { SearchItemFromLocalUseCase(get()) }
 }

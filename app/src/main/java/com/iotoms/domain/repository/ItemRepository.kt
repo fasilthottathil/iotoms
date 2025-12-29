@@ -13,4 +13,5 @@ interface ItemRepository {
     suspend fun getAllItemsPaginated(page: Int): Result<List<Boolean>, ApiError>
     fun getPaginateItemsFromLocal(): Flow<PagingData<ItemEntity>>
     fun getPaginateItemsByItemIdsFromLocal(ids: List<String>): Flow<PagingData<ItemEntity>>
+    fun searchItemsFromLocal(query: String): Flow<PagingData<ItemEntity>>
 }

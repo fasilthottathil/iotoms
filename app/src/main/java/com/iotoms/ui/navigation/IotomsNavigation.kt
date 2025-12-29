@@ -1,5 +1,8 @@
 package com.iotoms.ui.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -15,6 +18,9 @@ import com.iotoms.ui.auth.login.LoginViewModel
 import com.iotoms.ui.cart.Cart
 import com.iotoms.ui.cart.CartScreen
 import com.iotoms.ui.cart.CartViewModel
+import com.iotoms.ui.item.search.SearchItemScreen
+import com.iotoms.ui.item.search.SearchItemScreenNavKey
+import com.iotoms.ui.item.search.SearchItemViewModel
 import com.iotoms.ui.sync.DataSync
 import com.iotoms.ui.sync.DataSyncDialogScreen
 import com.iotoms.ui.sync.DataSyncViewModel
@@ -70,9 +76,32 @@ fun IotomsNavigation() {
                     onUpdateQuantity = viewModel::updateQuantity,
                     onGeneralItemClick = viewModel::addGeneralItemToCart,
                     onClearCart = viewModel::clearCart,
-                    setQuickPickItemSource = viewModel::setItemSource
+                    setQuickPickItemSource = viewModel::setItemSource,
+                    onClickSearch = {
+                        backStack.add(SearchItemScreenNavKey)
+                    }
                 )
             }
+            entry<SearchItemScreenNavKey> {
+                val viewModel = koinViewModel<SearchItemViewModel>()
+                SearchItemScreen(
+                    uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    pagingItems = viewModel.pagingItemsFlow.collectAsLazyPagingItems(),
+                    onSearch = viewModel::onSearch,
+                    onItemClick = viewModel::addItemToCart,
+                    onClickBack = {
+                        backStack.remove(SearchItemScreenNavKey)
+                    }
+                )
+            }
+        },
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith // Previous screen enters from left
+                    slideOutHorizontally(targetOffsetX = { it })
         }
     )
 }

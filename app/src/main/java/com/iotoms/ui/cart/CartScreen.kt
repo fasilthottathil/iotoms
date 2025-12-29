@@ -68,7 +68,8 @@ fun CartScreen(
     onUpdateQuantity: (CartItemEntity) -> Unit = {},
     onClearCart: () -> Unit = {},
     itemSource: State<ItemSource>,
-    setQuickPickItemSource: (ItemSource) -> Unit = {}
+    setQuickPickItemSource: (ItemSource) -> Unit = {},
+    onClickSearch: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val orientation = getDeviceOrientation()
@@ -209,7 +210,8 @@ fun CartScreen(
                             onGeneralItemClick = onGeneralItemClick,
                             uiState = uiState,
                             setQuickPickItemSource = setQuickPickItemSource,
-                            itemSource = itemSource
+                            itemSource = itemSource,
+                            onClickSearch = onClickSearch
                         )
                     } else {
                         CartScreenExpanded(
@@ -224,7 +226,8 @@ fun CartScreen(
                             onUpdateQuantity = onUpdateQuantity,
                             onGeneralItemClick = onGeneralItemClick,
                             setQuickPickItemSource = setQuickPickItemSource,
-                            itemSource = itemSource
+                            itemSource = itemSource,
+                            onClickSearch = onClickSearch
                         )
                     }
                 }

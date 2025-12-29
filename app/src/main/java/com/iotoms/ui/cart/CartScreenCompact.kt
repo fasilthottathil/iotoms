@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Discount
@@ -29,13 +28,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.iotoms.data.local.entity.ItemEntity
@@ -65,7 +61,8 @@ fun CartScreenCompact(
     onGeneralItemClick: (String) -> Unit,
     uiState: State<CartUiState>,
     setQuickPickItemSource: (ItemSource) -> Unit,
-    itemSource: State<ItemSource>
+    itemSource: State<ItemSource>,
+    onClickSearch: () -> Unit
 ) {
     val quickPicks = uiState.value.cart.quickPicks
     val isEmptyCart = uiState.value.cart.cartItems.isEmpty()
@@ -94,7 +91,8 @@ fun CartScreenCompact(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = NeutralGray50
+                tint = NeutralGray50,
+                modifier = Modifier.clickable(onClick = onClickSearch)
             )
         }
         Spacer(modifier = Modifier.height(SmallPadding))
