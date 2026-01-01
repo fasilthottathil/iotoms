@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.coil.compose)
+    implementation(libs.coil.compose.network)
 
 
     testImplementation(libs.junit)

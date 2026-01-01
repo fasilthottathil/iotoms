@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.paging.compose.LazyPagingItems
 import com.iotoms.data.enum.DeviceOrientation
@@ -69,7 +70,8 @@ fun CartScreen(
     onClearCart: () -> Unit = {},
     itemSource: State<ItemSource>,
     setQuickPickItemSource: (ItemSource) -> Unit = {},
-    onClickSearch: () -> Unit = {}
+    onClickSearch: () -> Unit = {},
+    backStack: NavBackStack<NavKey>
 ) {
     val context = LocalContext.current
     val orientation = getDeviceOrientation()
@@ -102,7 +104,15 @@ fun CartScreen(
         drawerContent = {
             ModalDrawerSheet {
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                   cartDrawerItem(regInfo)
+                   cartDrawerItem(
+                       regInfo = regInfo,
+                       backStack = backStack,
+                       onDrawerItemClick = {
+                           scope.launch {
+                               drawerState.close()
+                           }
+                       }
+                   )
                 }
                 Row(
                     modifier = Modifier

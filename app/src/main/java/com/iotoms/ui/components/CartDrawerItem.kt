@@ -25,8 +25,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.iotoms.R
 import com.iotoms.ui.cart.RegisterInfo
+import com.iotoms.ui.item.search.SearchItemScreenNavKey
 import com.iotoms.ui.theme.ButtonHeight
 import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.MediumPadding
@@ -37,7 +40,11 @@ import com.iotoms.ui.theme.PrimaryTealLight
 /**
  * Created by Fasil on 08/11/2025
  */
-fun LazyListScope.cartDrawerItem(regInfo: RegisterInfo?) {
+fun LazyListScope.cartDrawerItem(
+    regInfo: RegisterInfo?,
+    backStack: NavBackStack<NavKey>,
+    onDrawerItemClick: () -> Unit = {}
+) {
     item {
         Column(
             modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp).background(
@@ -77,7 +84,10 @@ fun LazyListScope.cartDrawerItem(regInfo: RegisterInfo?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(ButtonHeight)
-                .clickable(onClick = { })
+                .clickable(onClick = {
+                    backStack.add(SearchItemScreenNavKey(false))
+                    onDrawerItemClick()
+                })
                 .padding(ExtraSmallPadding),
             verticalAlignment = Alignment.CenterVertically
         ) {

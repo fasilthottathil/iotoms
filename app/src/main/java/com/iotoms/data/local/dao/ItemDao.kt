@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.iotoms.data.local.entity.ItemEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by Fasil on 21/12/2025
@@ -19,6 +20,9 @@ interface ItemDao {
 
     @Query("SELECT * FROM items WHERE itemId = :itemId LIMIT 1")
     suspend fun getItemById(itemId: String): ItemEntity?
+
+    @Query("SELECT * FROM items WHERE itemId = :itemId LIMIT 1")
+    fun getItemByItemId(itemId: String): Flow<ItemEntity?>
 
     @Query("DELETE FROM items")
     suspend fun clearItems()

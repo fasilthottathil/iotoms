@@ -90,4 +90,8 @@ class ItemRepositoryImpl(
             pagingSourceFactory = { appDatabase.itemDao().searchItems(query) }
         ).flow
     }
+
+    override fun getItemByItemId(itemId: String): Flow<ItemEntity?> {
+        return appDatabase.itemDao().getItemByItemId(itemId)
+    }
 }

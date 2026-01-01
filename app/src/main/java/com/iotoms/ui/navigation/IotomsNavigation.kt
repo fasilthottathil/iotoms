@@ -4,6 +4,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -21,6 +22,9 @@ import com.iotoms.ui.cart.CartViewModel
 import com.iotoms.ui.item.search.SearchItemScreen
 import com.iotoms.ui.item.search.SearchItemScreenNavKey
 import com.iotoms.ui.item.search.SearchItemViewModel
+import com.iotoms.ui.item.view.ViewItemScreen
+import com.iotoms.ui.item.view.ViewItemScreenNavKey
+import com.iotoms.ui.item.view.ViewItemViewModel
 import com.iotoms.ui.sync.DataSync
 import com.iotoms.ui.sync.DataSyncDialogScreen
 import com.iotoms.ui.sync.DataSyncViewModel
@@ -33,13 +37,22 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun IotomsNavigation() {
     val appPreference = koinInject<AppPreference>()
-    val backStack = rememberNavBackStack(if (appPreference.getDomainName().isNullOrEmpty()) Login else Cart)
+    val backStack =
+        rememberNavBackStack(if (appPreference.getDomainName().isNullOrEmpty()) Login else Cart)
     NavDisplay(
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
         backStack = backStack,
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith // Previous screen enters from left
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
         entryProvider = entryProvider {
             entry<Login> {
                 val viewModel = koinViewModel<LoginViewModel>()
@@ -78,8 +91,9 @@ fun IotomsNavigation() {
                     onClearCart = viewModel::clearCart,
                     setQuickPickItemSource = viewModel::setItemSource,
                     onClickSearch = {
-                        backStack.add(SearchItemScreenNavKey)
-                    }
+                        backStack.add(SearchItemScreenNavKey())
+                    },
+                    backStack = backStack
                 )
             }
             entry<SearchItemScreenNavKey> {
@@ -90,18 +104,26 @@ fun IotomsNavigation() {
                     onSearch = viewModel::onSearch,
                     onItemClick = viewModel::addItemToCart,
                     onClickBack = {
-                        backStack.remove(SearchItemScreenNavKey)
+                        backStack.removeLastOrNull()
+                    },
+                    onViewItem = {
+                        backStack.add(ViewItemScreenNavKey(it.itemId))
+                    },
+                    isSearch = it.isSearch
+                )
+            }
+            entry<ViewItemScreenNavKey> {
+                val viewModel = koinViewModel<ViewItemViewModel>()
+                LaunchedEffect(it.itemId) {
+                    viewModel.getItemByItemId(it.itemId)
+                }
+                ViewItemScreen(
+                    uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    onClickBack = {
+                        backStack.removeLastOrNull()
                     }
                 )
             }
-        },
-        transitionSpec = {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                    slideOutHorizontally(targetOffsetX = { -it })
-        },
-        popTransitionSpec = {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith // Previous screen enters from left
-                    slideOutHorizontally(targetOffsetX = { it })
         }
     )
 }

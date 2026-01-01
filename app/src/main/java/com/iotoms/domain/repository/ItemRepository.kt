@@ -14,4 +14,5 @@ interface ItemRepository {
     fun getPaginateItemsFromLocal(): Flow<PagingData<ItemEntity>>
     fun getPaginateItemsByItemIdsFromLocal(ids: List<String>): Flow<PagingData<ItemEntity>>
     fun searchItemsFromLocal(query: String): Flow<PagingData<ItemEntity>>
+    fun getItemByItemId(itemId: String): Flow<ItemEntity?>
 }

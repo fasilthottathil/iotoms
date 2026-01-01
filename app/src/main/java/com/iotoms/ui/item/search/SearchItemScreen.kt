@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +50,7 @@ import kotlinx.serialization.Serializable
  * Created by Fasil on 29/12/2025
  */
 @Serializable
-data object SearchItemScreenNavKey : NavKey
+data class SearchItemScreenNavKey(val isSearch: Boolean = true) : NavKey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +59,9 @@ fun SearchItemScreen(
     pagingItems: LazyPagingItems<ItemEntity>,
     onSearch: (String) -> Unit,
     onItemClick: (ItemEntity) -> Unit,
-    onClickBack: () -> Unit
+    onViewItem: (ItemEntity) -> Unit,
+    onClickBack: () -> Unit,
+    isSearch: Boolean
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -91,7 +91,7 @@ fun SearchItemScreen(
                                 .clickable(onClick = onClickBack)
                         )
                         Spacer(Modifier.width(SmallPadding))
-                        Text("Search Items")
+                        Text(if (isSearch) "Search Items" else "Items")
                     }
                 }
             )
@@ -143,7 +143,13 @@ fun SearchItemScreen(
                                 Box(
                                     modifier = Modifier
                                         .padding(ExtraSmallPadding)
-                                        .clickable(onClick = { onItemClick(item) })
+                                        .clickable(onClick = {
+                                            if (isSearch) {
+                                                onItemClick(item)
+                                            } else {
+                                                onViewItem(item)
+                                            }
+                                        })
                                 ) {
                                     ProductItem(item)
                                 }
