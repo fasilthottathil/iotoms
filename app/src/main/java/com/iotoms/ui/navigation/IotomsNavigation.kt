@@ -19,6 +19,8 @@ import com.iotoms.ui.auth.login.LoginViewModel
 import com.iotoms.ui.cart.Cart
 import com.iotoms.ui.cart.CartScreen
 import com.iotoms.ui.cart.CartViewModel
+import com.iotoms.ui.item.add.AddItemScreen
+import com.iotoms.ui.item.add.AddItemScreenNavKey
 import com.iotoms.ui.item.search.SearchItemScreen
 import com.iotoms.ui.item.search.SearchItemScreenNavKey
 import com.iotoms.ui.item.search.SearchItemViewModel
@@ -109,7 +111,10 @@ fun IotomsNavigation() {
                     onViewItem = {
                         backStack.add(ViewItemScreenNavKey(it.itemId))
                     },
-                    isSearch = it.isSearch
+                    isSearch = it.isSearch,
+                    onClickItemAdd = {
+                        backStack.add(AddItemScreenNavKey)
+                    }
                 )
             }
             entry<ViewItemScreenNavKey> {
@@ -119,6 +124,13 @@ fun IotomsNavigation() {
                 }
                 ViewItemScreen(
                     uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    onClickBack = {
+                        backStack.removeLastOrNull()
+                    }
+                )
+            }
+            entry<AddItemScreenNavKey> {
+                AddItemScreen(
                     onClickBack = {
                         backStack.removeLastOrNull()
                     }

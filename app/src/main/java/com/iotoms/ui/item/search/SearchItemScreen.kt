@@ -15,8 +15,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,12 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.iotoms.data.enum.DeviceOrientation
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.OutlinedTextBox
 import com.iotoms.ui.components.ProductItem
 import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.IconSize
 import com.iotoms.ui.theme.SmallPadding
+import com.iotoms.utils.getDeviceOrientation
 import kotlinx.serialization.Serializable
 
 /**
@@ -61,6 +66,7 @@ fun SearchItemScreen(
     onItemClick: (ItemEntity) -> Unit,
     onViewItem: (ItemEntity) -> Unit,
     onClickBack: () -> Unit,
+    onClickItemAdd: () -> Unit,
     isSearch: Boolean
 ) {
     val context = LocalContext.current
@@ -95,6 +101,32 @@ fun SearchItemScreen(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            if (isSearch.not()) {
+                if (getDeviceOrientation() == DeviceOrientation.PORTRAIT) {
+                    FloatingActionButton(
+                        onClick = onClickItemAdd,
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                    )
+                } else {
+                    ExtendedFloatingActionButton(
+                        onClick = onClickItemAdd,
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null
+                            )
+                            Text("Add Item")
+                        }
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {

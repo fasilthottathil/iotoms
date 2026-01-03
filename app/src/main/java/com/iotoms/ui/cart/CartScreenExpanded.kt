@@ -229,8 +229,7 @@ fun CartScreenExpanded(
             )
             LazyColumn(verticalArrangement = Arrangement.spacedBy(ExtraSmallPadding)) {
                 items(
-                    count = cartItems.size,
-                    key = { index -> cartItems[index].id }
+                    count = cartItems.size
                 ) { index ->
                     Box(
                         modifier = Modifier.padding(
