@@ -2,6 +2,8 @@ package com.iotoms.di
 
 import com.iotoms.ui.auth.login.LoginViewModel
 import com.iotoms.ui.cart.CartViewModel
+import com.iotoms.ui.item.add.AddItemViewModel
+import com.iotoms.ui.item.attribute.AttributeViewModel
 import com.iotoms.ui.item.search.SearchItemViewModel
 import com.iotoms.ui.item.view.ViewItemViewModel
 import com.iotoms.ui.sync.DataSyncViewModel
@@ -17,4 +19,6 @@ val viewModelModule = module {
     viewModel<CartViewModel> { CartViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel<SearchItemViewModel> { SearchItemViewModel(get(),get(),get()) }
     viewModel<ViewItemViewModel> { ViewItemViewModel(get(), get()) }
+    viewModel<AttributeViewModel> { AttributeViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel<AddItemViewModel> { AddItemViewModel(get()) }
 }

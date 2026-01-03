@@ -1,5 +1,11 @@
 package com.iotoms.di
 
+import com.iotoms.domain.usecase.attribute.GetBrandsFromLocalUseCase
+import com.iotoms.domain.usecase.attribute.GetCategoriesFromLocalUseCase
+import com.iotoms.domain.usecase.attribute.GetColorsFromLocalUseCase
+import com.iotoms.domain.usecase.attribute.GetDepartmentsFromLocalUseCase
+import com.iotoms.domain.usecase.attribute.GetSizesFromLocalUseCase
+import com.iotoms.domain.usecase.attribute.GetSubCategoriesFromLocalUseCase
 import com.iotoms.domain.usecase.auth.RegisterUseCase
 import com.iotoms.domain.usecase.business.register.GetRegisterInfoUseCase
 import com.iotoms.domain.usecase.cart.AddGeneralItemToCartUseCase
@@ -38,4 +44,10 @@ val useCaseModule = module {
     factory { GetRegisterInfoUseCase(get()) }
     factory { SearchItemFromLocalUseCase(get()) }
     factory { GetItemByItemIdFlowUseCase(get()) }
+    factory { GetDepartmentsFromLocalUseCase(get()) }
+    factory { GetSizesFromLocalUseCase(get()) }
+    factory { GetColorsFromLocalUseCase(get()) }
+    factory { GetCategoriesFromLocalUseCase(get()) }
+    factory { GetSubCategoriesFromLocalUseCase(get()) }
+    factory { GetBrandsFromLocalUseCase(get()) }
 }

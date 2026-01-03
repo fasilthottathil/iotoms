@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import com.iotoms.ui.components.DropDownBox
 import com.iotoms.ui.components.ImageUploadSection
@@ -25,7 +26,7 @@ import com.iotoms.ui.theme.SmallPadding
  * Created by Fasil on 03/01/2026
  */
 @Composable
-fun AddItemScreenExpanded() {
+fun AddItemScreenExpanded(uiState: State<AddItemScreenUiState>) {
     Row(
         modifier = Modifier
             .fillMaxSize()

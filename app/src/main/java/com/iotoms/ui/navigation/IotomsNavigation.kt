@@ -21,6 +21,10 @@ import com.iotoms.ui.cart.CartScreen
 import com.iotoms.ui.cart.CartViewModel
 import com.iotoms.ui.item.add.AddItemScreen
 import com.iotoms.ui.item.add.AddItemScreenNavKey
+import com.iotoms.ui.item.add.AddItemViewModel
+import com.iotoms.ui.item.attribute.AttributeScreen
+import com.iotoms.ui.item.attribute.AttributeScreenNavKey
+import com.iotoms.ui.item.attribute.AttributeViewModel
 import com.iotoms.ui.item.search.SearchItemScreen
 import com.iotoms.ui.item.search.SearchItemScreenNavKey
 import com.iotoms.ui.item.search.SearchItemViewModel
@@ -39,8 +43,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun IotomsNavigation() {
     val appPreference = koinInject<AppPreference>()
-    val backStack =
-        rememberNavBackStack(if (appPreference.getDomainName().isNullOrEmpty()) Login else Cart)
+    val backStack = rememberNavBackStack(if (appPreference.getDomainName().isNullOrEmpty()) Login else Cart)
+    val resultStore = rememberResultStore()
     NavDisplay(
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
@@ -130,8 +134,35 @@ fun IotomsNavigation() {
                 )
             }
             entry<AddItemScreenNavKey> {
+                val selectedAttr = resultStore.getResultState<Triple<Int, String, String>>("selected-attr")
+                val viewModel = koinViewModel<AddItemViewModel>()
+                LaunchedEffect(selectedAttr) {
+                    viewModel.setAttr(selectedAttr)
+                    resultStore.removeResult<Triple<Int, String, String>>("selected-attr")
+                }
                 AddItemScreen(
+                    uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    onClickAttr = {
+                        backStack.add(AttributeScreenNavKey(it))
+                    },
                     onClickBack = {
+                        backStack.removeLastOrNull()
+                    },
+                    onClickSave = viewModel::addItem,
+                    onValueChange = viewModel::onValueChange
+                )
+            }
+            entry<AttributeScreenNavKey> {
+                val viewModel = koinViewModel<AttributeViewModel>()
+                AttributeScreen(
+                    attrType = it.attrType,
+                    uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+                    onAttrClick = { data ->
+                        resultStore.setResult("selected-attr", Triple(data.first, data.second, it.attrType))
+                        backStack.removeLastOrNull()
+                    },
+                    onClickBack = {
+                        resultStore.removeResult<Triple<Int, String, String>>("selected-attr")
                         backStack.removeLastOrNull()
                     }
                 )

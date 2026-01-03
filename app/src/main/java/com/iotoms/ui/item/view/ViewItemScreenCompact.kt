@@ -89,7 +89,7 @@ fun ViewItemScreenCompact(modifier: Modifier, itemEntity: ItemEntity?) {
                 modifier = Modifier.padding(start = ExtraSmallPadding)
             )
             OutlinedTextBox(
-                value = itemEntity.upc,
+                value = itemEntity.upc.orEmpty(),
                 onValueChange = { },
                 readOnly = true
             )

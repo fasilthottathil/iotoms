@@ -1,5 +1,11 @@
 package com.iotoms.ui.item.add
 
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,13 +26,25 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.navigation3.runtime.NavKey
 import com.iotoms.data.enum.DeviceOrientation
 import com.iotoms.ui.theme.IconSize
 import com.iotoms.ui.theme.SmallPadding
+import com.iotoms.utils.PermissionResolver
+import com.iotoms.utils.createCameraUri
 import com.iotoms.utils.getDeviceOrientation
+import com.iotoms.utils.uriToFile
 import kotlinx.serialization.Serializable
 
 /**
@@ -38,9 +56,53 @@ data object AddItemScreenNavKey : NavKey
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemScreen(
-    onClickBack: () -> Unit
+    uiState: State<AddItemScreenUiState>,
+    onClickAttr: (String) -> Unit,
+    onClickBack: () -> Unit,
+    onClickSave: () -> Unit,
+    onValueChange: () -> Unit
 ) {
     val orientation = getDeviceOrientation()
+    val context = LocalContext.current
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var cameraUri by remember { mutableStateOf<Uri?>(null) }
+
+    // ---- Permission Launcher ----
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (granted) {
+                pendingAction?.invoke()
+            } else {
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+            pendingAction = null
+        }
+
+    // ---- Gallery Picker ----
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.PickVisualMedia()
+        ) { uri ->
+            uri?.let {
+                uiState.value.imageFile = uriToFile(context, it)
+                onValueChange()
+            }
+        }
+
+    // ---- Camera Launcher ----
+    val cameraLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success ->
+            if (success) {
+                cameraUri?.let {
+                    uiState.value.imageFile = uriToFile(context, it)
+                    onValueChange()
+                }
+            }
+        }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -65,7 +127,7 @@ fun AddItemScreen(
                 },
                 actions = {
                     TextButton(
-                        onClick = { },
+                        onClick = onClickSave,
                         content = {
                             Icon(
                                 imageVector = Icons.Outlined.Save,
@@ -81,11 +143,47 @@ fun AddItemScreen(
     ) { innerPadding ->
         if (orientation == DeviceOrientation.PORTRAIT) {
             Box(modifier = Modifier.padding(innerPadding)) {
-                AddItemScreenCompact()
+                AddItemScreenCompact(
+                    uiState = uiState,
+                    onClickAttr = onClickAttr,
+                    onAddPhoto = {
+                        val permission = PermissionResolver.galleryPermission()
+                        if (ContextCompat.checkSelfPermission(context, permission)
+                            == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            galleryLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        } else {
+                            pendingAction = {
+                                galleryLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            }
+                            permissionLauncher.launch(permission)
+                        }
+                    },
+                    onTakePhoto = {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                PermissionResolver.CAMERA
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            cameraUri = createCameraUri(context)
+                            cameraLauncher.launch(cameraUri!!)
+                        } else {
+                            pendingAction = {
+                                cameraUri = createCameraUri(context)
+                                cameraLauncher.launch(cameraUri!!)
+                            }
+                            permissionLauncher.launch(PermissionResolver.CAMERA)
+                        }
+                    }
+                )
             }
         } else {
             Box(modifier = Modifier.padding(innerPadding)) {
-                AddItemScreenExpanded()
+                AddItemScreenExpanded(uiState)
             }
         }
     }

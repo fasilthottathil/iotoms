@@ -13,31 +13,39 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.DropDownBox
 import com.iotoms.ui.components.ImageUploadSection
 import com.iotoms.ui.components.OutlinedTextBox
 import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.MediumPadding
 import com.iotoms.ui.theme.SmallPadding
+import com.iotoms.utils.extensions.formatAmount
+import com.iotoms.utils.extensions.getOrZero
 
 /**
  * Created by Fasil on 03/01/2026
  */
 @Composable
-fun AddItemScreenCompact() {
+fun AddItemScreenCompact(
+    uiState: State<AddItemScreenUiState>,
+    onClickAttr: (String) -> Unit,
+    onAddPhoto: () -> Unit,
+    onTakePhoto: () -> Unit,
+) {
+    val itemEntity = uiState.value.itemEntity
+    val fileUri = uiState.value.imageFile
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(SmallPadding)
         .verticalScroll(rememberScrollState())
     ) {
         ImageUploadSection(
-            onAddPhoto = {
-
-            },
-            onTakePhoto = {
-
-            }
+            image = fileUri ?: itemEntity.imageGallery?.imageUrl,
+            onAddPhoto = onAddPhoto,
+            onTakePhoto = onTakePhoto
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -49,8 +57,10 @@ fun AddItemScreenCompact() {
             placeholder = {
                 Text("Enter item name")
             },
-            value = "",
-            onValueChange = { }
+            value = itemEntity.itemName.orEmpty(),
+            onValueChange = {
+                itemEntity.itemName = it
+            }
         )
         Spacer(Modifier.height(SmallPadding))
         Text(
@@ -62,8 +72,10 @@ fun AddItemScreenCompact() {
             placeholder = {
                 Text("Enter item id")
             },
-            value = "",
-            onValueChange = { }
+            value = itemEntity.itemId,
+            onValueChange = {
+                itemEntity.itemId = it
+            }
         )
         Spacer(Modifier.height(SmallPadding))
         Text(
@@ -75,8 +87,10 @@ fun AddItemScreenCompact() {
             placeholder = {
                 Text("Enter UPC")
             },
-            value = "",
-            onValueChange = { }
+            value = itemEntity.upc.orEmpty(),
+            onValueChange = {
+                itemEntity.upc = it
+            }
         )
 
         Spacer(Modifier.height(MediumPadding))
@@ -92,8 +106,10 @@ fun AddItemScreenCompact() {
                     placeholder = {
                         Text("Enter selling price")
                     },
-                    value = "",
-                    onValueChange = { }
+                    value = itemEntity.sellingPrice.getOrZero().toString().formatAmount(),
+                    onValueChange = {
+                        itemEntity.sellingPrice = it.toDoubleOrNull()
+                    }
                 )
             }
             Spacer(Modifier.width(SmallPadding))
@@ -107,8 +123,10 @@ fun AddItemScreenCompact() {
                     placeholder = {
                         Text("Enter cost price")
                     },
-                    value = "",
-                    onValueChange = { }
+                    value = itemEntity.costPrice.getOrZero().toString().formatAmount(),
+                    onValueChange = {
+                        itemEntity.costPrice = it.toDoubleOrNull()
+                    }
                 )
             }
         }
@@ -122,7 +140,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select category",
-            onClick = { }
+            onClick = {
+                onClickAttr("category")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -133,7 +153,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select sub category",
-            onClick = { }
+            onClick = {
+                onClickAttr("sub_category")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -144,7 +166,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select brand",
-            onClick = { }
+            onClick = {
+                onClickAttr("brand")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -155,7 +179,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select department",
-            onClick = { }
+            onClick = {
+                onClickAttr("department")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -166,7 +192,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select color",
-            onClick = { }
+            onClick = {
+                onClickAttr("color")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -177,7 +205,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select size",
-            onClick = { }
+            onClick = {
+                onClickAttr("size")
+            }
         )
         Spacer(Modifier.height(MediumPadding))
         Text(
@@ -188,7 +218,9 @@ fun AddItemScreenCompact() {
         DropDownBox(
             modifier = Modifier.fillMaxWidth(),
             text = "Select style",
-            onClick = { }
+            onClick = {
+                onClickAttr("style")
+            }
         )
     }
 }

@@ -2,7 +2,6 @@ package com.iotoms.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import com.iotoms.data.model.response.Color
 import com.iotoms.data.model.response.ImageGallery
 
@@ -13,69 +12,59 @@ import com.iotoms.data.model.response.ImageGallery
 data class ItemEntity(
 
     @PrimaryKey
-    @field:SerializedName("itemId")
-    val itemId: String,
+    var itemId: String,
 
-    @field:SerializedName("modifiedTime")
-    val modifiedTime: String? = null,
+    var modifiedTime: String? = null,
 
-    @field:SerializedName("imageGallery")
-    val imageGallery: ImageGallery? = null,
+    var imageGallery: ImageGallery? = null,
 
-    @field:SerializedName("productId")
-    val productId: String? = null,
+    var productId: String? = null,
 
-    @field:SerializedName("color")
-    val color: Color? = null,
+    var color: Color? = null,
 
-    @field:SerializedName("costPrice")
-    val costPrice: Double? = null,
+    var costPrice: Double? = null,
 
-    @field:SerializedName("upc")
-    val upc: String? = null,
+    var upc: String? = null,
 
-    @field:SerializedName("description")
-    val description: String? = null,
+    var description: String? = null,
 
-    @field:SerializedName("discountId")
     val discountIds: List<Int>? = null,
 
-    @field:SerializedName("taxId")
     val taxIds: List<Int>? = null,
 
-    @field:SerializedName("type")
-    val type: String? = null,
+    var type: String? = null,
 
-    @field:SerializedName("itemName")
     var itemName: String? = null,
 
-    @field:SerializedName("sellingPrice")
     var sellingPrice: Double? = null,
 
-    @field:SerializedName("sizeId")
-    val sizeId: Int? = null,
+    var sizeId: Int? = null,
 
-    @field:SerializedName("season")
-    val season: String? = null,
+    var size: String? = null,
 
-    @field:SerializedName("styleId")
-    val styleId: Int? = null,
+    var season: String? = null,
 
-    @field:SerializedName("id")
-    val id: Int? = null,
+    var styleId: Int? = null, 
+    
+    var style: String? = null,
 
-    @field:SerializedName("departmentId")
-    val departmentId: Int? = null,
+    var id: Int? = null,
 
-    @field:SerializedName("categoryId")
-    val categoryId: Int? = null,
+    var departmentId: Int? = null,
 
-    @field:SerializedName("subcategoryId")
-    val subcategoryId: Int? = null,
+    var department: String? = null,
 
-    @field:SerializedName("brandId")
-    val brandId: Int? = null,
+    var categoryId: Int? = null,
+    
+    var category: String? = null,
 
-    @field:SerializedName("status")
-    val status: String? = null
+    var subcategoryId: Int? = null,
+    
+    var subcategory: String? = null,
+
+    var brandId: Int? = null,
+    
+    var brand: String? = null,
+
+    var status: String? = null
 )
