@@ -26,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation3.runtime.NavKey
 import com.iotoms.data.enum.DeviceOrientation
+import com.iotoms.ui.components.LoaderDialog
 import com.iotoms.ui.theme.IconSize
 import com.iotoms.ui.theme.SmallPadding
 import com.iotoms.utils.PermissionResolver
@@ -60,12 +62,26 @@ fun AddItemScreen(
     onClickAttr: (String) -> Unit,
     onClickBack: () -> Unit,
     onClickSave: () -> Unit,
-    onValueChange: () -> Unit
+    onItemAdded: () -> Unit
 ) {
     val orientation = getDeviceOrientation()
     val context = LocalContext.current
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     var cameraUri by remember { mutableStateOf<Uri?>(null) }
+    val fileUri = retain { mutableStateOf(uiState.value.imageFile) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.value) {
+        isLoading = uiState.value.isLoading
+        if (uiState.value.isItemAdded) {
+            Toast.makeText(context, "Item added", Toast.LENGTH_SHORT).show()
+            onItemAdded()
+        }
+    }
+
+    if (isLoading) {
+        LoaderDialog(text = "Adding item...")
+    }
 
     // ---- Permission Launcher ----
     val permissionLauncher =
@@ -87,7 +103,7 @@ fun AddItemScreen(
         ) { uri ->
             uri?.let {
                 uiState.value.imageFile = uriToFile(context, it)
-                onValueChange()
+                fileUri.value = uiState.value.imageFile
             }
         }
 
@@ -99,7 +115,7 @@ fun AddItemScreen(
             if (success) {
                 cameraUri?.let {
                     uiState.value.imageFile = uriToFile(context, it)
-                    onValueChange()
+                    fileUri.value = uiState.value.imageFile
                 }
             }
         }
@@ -145,6 +161,7 @@ fun AddItemScreen(
             Box(modifier = Modifier.padding(innerPadding)) {
                 AddItemScreenCompact(
                     uiState = uiState,
+                    fileUri = fileUri,
                     onClickAttr = onClickAttr,
                     onAddPhoto = {
                         val permission = PermissionResolver.galleryPermission()
@@ -183,7 +200,44 @@ fun AddItemScreen(
             }
         } else {
             Box(modifier = Modifier.padding(innerPadding)) {
-                AddItemScreenExpanded(uiState)
+                AddItemScreenExpanded(
+                    uiState = uiState,
+                    fileUri = fileUri,
+                    onClickAttr = onClickAttr,
+                    onAddPhoto = {
+                        val permission = PermissionResolver.galleryPermission()
+                        if (ContextCompat.checkSelfPermission(context, permission)
+                            == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            galleryLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        } else {
+                            pendingAction = {
+                                galleryLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            }
+                            permissionLauncher.launch(permission)
+                        }
+                    },
+                    onTakePhoto = {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                PermissionResolver.CAMERA
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            cameraUri = createCameraUri(context)
+                            cameraLauncher.launch(cameraUri!!)
+                        } else {
+                            pendingAction = {
+                                cameraUri = createCameraUri(context)
+                                cameraLauncher.launch(cameraUri!!)
+                            }
+                            permissionLauncher.launch(PermissionResolver.CAMERA)
+                        }
+                    }
+                )
             }
         }
     }

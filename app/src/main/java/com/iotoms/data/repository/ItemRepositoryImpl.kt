@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.iotoms.data.local.db.AppDatabase
 import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.data.mapper.toItemEntity
+import com.iotoms.data.model.request.AddItemRequest
 import com.iotoms.data.model.response.ItemResponse
 import com.iotoms.data.model.response.PageResponse
 import com.iotoms.data.remote.api.ApiError
@@ -16,6 +17,8 @@ import com.iotoms.utils.Result
 import com.iotoms.utils.constants.ApiUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -93,5 +96,17 @@ class ItemRepositoryImpl(
 
     override fun getItemByItemId(itemId: String): Flow<ItemEntity?> {
         return appDatabase.itemDao().getItemByItemId(itemId)
+    }
+
+    override suspend fun addItem(addItemRequest: AddItemRequest): Result<ItemResponse, ApiError> {
+        return apiRequest<ItemResponse> {
+            client.post(ApiUrl.ITEMS) {
+                setBody(addItemRequest)
+            }
+        }.also {
+            if (it is Result.Success) {
+                appDatabase.itemDao().insertItems(listOf(it.data.toItemEntity()))
+            }
+        }
     }
 }

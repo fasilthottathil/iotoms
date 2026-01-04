@@ -10,5 +10,6 @@ data class AddItemScreenUiState(
     var isLoading: Boolean = false,
     var itemEntity: ItemEntity = ItemEntity(itemId = ""),
     var imageFile: File? = null,
-    var error: String? = null
+    var error: String? = null,
+    var isItemAdded: Boolean = false
 )

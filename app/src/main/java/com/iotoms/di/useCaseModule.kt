@@ -14,6 +14,9 @@ import com.iotoms.domain.usecase.cart.ClearCartUseCase
 import com.iotoms.domain.usecase.cart.GetCartAsFlowUseCase
 import com.iotoms.domain.usecase.cart.GetCartItemsUseCase
 import com.iotoms.domain.usecase.cart.UpdateCartItemQuantityUseCase
+import com.iotoms.domain.usecase.file.FileUploadUseCase
+import com.iotoms.domain.usecase.image_gallery.AddImageGalleryUseCase
+import com.iotoms.domain.usecase.item.AddItemUseCase
 import com.iotoms.domain.usecase.item.GetItemByItemIdFlowUseCase
 import com.iotoms.domain.usecase.item.GetPaginatedItemsByItemIdsFromLocalUseCase
 import com.iotoms.domain.usecase.item.GetPaginatedItemsFromLocalUseCase
@@ -50,4 +53,7 @@ val useCaseModule = module {
     factory { GetCategoriesFromLocalUseCase(get()) }
     factory { GetSubCategoriesFromLocalUseCase(get()) }
     factory { GetBrandsFromLocalUseCase(get()) }
+    factory { FileUploadUseCase(get()) }
+    factory { AddImageGalleryUseCase(get()) }
+    factory { AddItemUseCase(get()) }
 }

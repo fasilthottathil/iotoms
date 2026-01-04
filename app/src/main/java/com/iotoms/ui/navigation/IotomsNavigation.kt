@@ -149,7 +149,9 @@ fun IotomsNavigation() {
                         backStack.removeLastOrNull()
                     },
                     onClickSave = viewModel::addItem,
-                    onValueChange = viewModel::onValueChange
+                    onItemAdded = {
+                        backStack.removeLastOrNull()
+                    }
                 )
             }
             entry<AttributeScreenNavKey> {

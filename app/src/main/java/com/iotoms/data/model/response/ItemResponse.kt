@@ -193,5 +193,5 @@ data class ImageGallery(
 	val imageUrl: String? = null,
 
 	@field:SerializedName("id")
-	val id: Int? = null
+	var id: Int? = null
 )

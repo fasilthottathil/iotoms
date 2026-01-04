@@ -33,4 +33,6 @@ object ApiUrl {
     const val REGISTERS = "$BUSINESS/registers"
     const val STORE_BRANDING = "$STORES/branding"
     const val QUICKPICKS = "/api/v1/quickpick/resolve"
+    const val FILE_UPLOAD = "/api/v1/storage/uploads"
+    const val IMAGE_GALLERY = "$ATTRIBUTES/image-gallery"
 }

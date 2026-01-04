@@ -20,5 +20,5 @@ val viewModelModule = module {
     viewModel<SearchItemViewModel> { SearchItemViewModel(get(),get(),get()) }
     viewModel<ViewItemViewModel> { ViewItemViewModel(get(), get()) }
     viewModel<AttributeViewModel> { AttributeViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel<AddItemViewModel> { AddItemViewModel(get()) }
+    viewModel<AddItemViewModel> { AddItemViewModel(get(), get(), get(), get()) }
 }

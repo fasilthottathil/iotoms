@@ -8,6 +8,8 @@ import com.iotoms.data.repository.CartRepositoryImpl
 import com.iotoms.data.repository.CustomerRepositoryImpl
 import com.iotoms.data.repository.DataSyncRepositoryImpl
 import com.iotoms.data.repository.DiscountRepositoryImpl
+import com.iotoms.data.repository.FileUploadRepositoryImpl
+import com.iotoms.data.repository.ImageGalleryRepositoryImpl
 import com.iotoms.data.repository.ItemRepositoryImpl
 import com.iotoms.data.repository.PayModeRepositoryImpl
 import com.iotoms.data.repository.QuickPickRepositoryImpl
@@ -21,6 +23,8 @@ import com.iotoms.domain.repository.CartRepository
 import com.iotoms.domain.repository.CustomerRepository
 import com.iotoms.domain.repository.DataSyncRepository
 import com.iotoms.domain.repository.DiscountRepository
+import com.iotoms.domain.repository.FileUploadRepository
+import com.iotoms.domain.repository.ImageGalleryRepository
 import com.iotoms.domain.repository.ItemRepository
 import com.iotoms.domain.repository.PayModeRepository
 import com.iotoms.domain.repository.QuickPickRepository
@@ -46,4 +50,6 @@ val repositoryModule = module {
     factory<CartRepository> { CartRepositoryImpl(get(), get(), get()) }
     factory<DiscountRepository> { DiscountRepositoryImpl(get(), get()) }
     factory<QuickPickRepository> { QuickPickRepositoryImpl(get(), get(), get()) }
+    factory<FileUploadRepository> { FileUploadRepositoryImpl(get()) }
+    factory<ImageGalleryRepository> { ImageGalleryRepositoryImpl(get()) }
 }

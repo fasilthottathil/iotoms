@@ -13,17 +13,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.iotoms.data.local.entity.ItemEntity
 import com.iotoms.ui.components.DropDownBox
+import com.iotoms.ui.components.ErrorOutlinedBox
 import com.iotoms.ui.components.ImageUploadSection
 import com.iotoms.ui.components.OutlinedTextBox
 import com.iotoms.ui.theme.ExtraSmallPadding
 import com.iotoms.ui.theme.MediumPadding
 import com.iotoms.ui.theme.SmallPadding
-import com.iotoms.utils.extensions.formatAmount
-import com.iotoms.utils.extensions.getOrZero
+import java.io.File
 
 /**
  * Created by Fasil on 03/01/2026
@@ -34,16 +40,35 @@ fun AddItemScreenCompact(
     onClickAttr: (String) -> Unit,
     onAddPhoto: () -> Unit,
     onTakePhoto: () -> Unit,
+    fileUri: MutableState<File?>
 ) {
     val itemEntity = uiState.value.itemEntity
-    val fileUri = uiState.value.imageFile
+    var productName by remember { mutableStateOf(itemEntity.itemName) }
+    var itemId by remember { mutableStateOf(itemEntity.itemId) }
+    var productId by remember { mutableStateOf(itemEntity.productId) }
+    var upc by remember { mutableStateOf(itemEntity.upc) }
+    var sellingPrice by remember { mutableStateOf(itemEntity.sellingPrice) }
+    var costPrice by remember { mutableStateOf(itemEntity.costPrice) }
+    var error by rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(uiState.value) {
+        error = uiState.value.error.orEmpty()
+    }
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(SmallPadding)
         .verticalScroll(rememberScrollState())
     ) {
+        if (error.isNotEmpty()) {
+            ErrorOutlinedBox(
+                error = error
+            ) {
+                uiState.value.error = ""
+                error = ""
+            }
+            Spacer(Modifier.height(MediumPadding))
+        }
         ImageUploadSection(
-            image = fileUri ?: itemEntity.imageGallery?.imageUrl,
+            image = fileUri.value ?: itemEntity.imageGallery?.imageUrl,
             onAddPhoto = onAddPhoto,
             onTakePhoto = onTakePhoto
         )
@@ -57,9 +82,11 @@ fun AddItemScreenCompact(
             placeholder = {
                 Text("Enter item name")
             },
-            value = itemEntity.itemName.orEmpty(),
+            value = productName.orEmpty(),
             onValueChange = {
                 itemEntity.itemName = it
+                productName = it
+                error = ""
             }
         )
         Spacer(Modifier.height(SmallPadding))
@@ -72,9 +99,28 @@ fun AddItemScreenCompact(
             placeholder = {
                 Text("Enter item id")
             },
-            value = itemEntity.itemId,
+            value = itemId,
             onValueChange = {
                 itemEntity.itemId = it
+                itemId = it
+                error = ""
+            }
+        )
+        Spacer(Modifier.height(SmallPadding))
+        Text(
+            "Product Id*",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(start = ExtraSmallPadding)
+        )
+        OutlinedTextBox(
+            placeholder = {
+                Text("Enter product id")
+            },
+            value = productId.orEmpty(),
+            onValueChange = {
+                itemEntity.productId = it
+                productId = it
+                error = ""
             }
         )
         Spacer(Modifier.height(SmallPadding))
@@ -87,9 +133,11 @@ fun AddItemScreenCompact(
             placeholder = {
                 Text("Enter UPC")
             },
-            value = itemEntity.upc.orEmpty(),
+            value = upc.orEmpty(),
             onValueChange = {
                 itemEntity.upc = it
+                upc = it
+                error = ""
             }
         )
 
@@ -106,9 +154,11 @@ fun AddItemScreenCompact(
                     placeholder = {
                         Text("Enter selling price")
                     },
-                    value = itemEntity.sellingPrice.getOrZero().toString().formatAmount(),
+                    value = sellingPrice?.toString() ?: "",
                     onValueChange = {
                         itemEntity.sellingPrice = it.toDoubleOrNull()
+                        sellingPrice = itemEntity.sellingPrice
+                        error = ""
                     }
                 )
             }
@@ -123,9 +173,11 @@ fun AddItemScreenCompact(
                     placeholder = {
                         Text("Enter cost price")
                     },
-                    value = itemEntity.costPrice.getOrZero().toString().formatAmount(),
+                    value = costPrice?.toString() ?: "",
                     onValueChange = {
                         itemEntity.costPrice = it.toDoubleOrNull()
+                        costPrice = itemEntity.costPrice
+                        error = ""
                     }
                 )
             }
@@ -142,6 +194,7 @@ fun AddItemScreenCompact(
             text = "Select category",
             onClick = {
                 onClickAttr("category")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -155,6 +208,7 @@ fun AddItemScreenCompact(
             text = "Select sub category",
             onClick = {
                 onClickAttr("sub_category")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -168,6 +222,7 @@ fun AddItemScreenCompact(
             text = "Select brand",
             onClick = {
                 onClickAttr("brand")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -181,6 +236,7 @@ fun AddItemScreenCompact(
             text = "Select department",
             onClick = {
                 onClickAttr("department")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -194,6 +250,7 @@ fun AddItemScreenCompact(
             text = "Select color",
             onClick = {
                 onClickAttr("color")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -207,6 +264,7 @@ fun AddItemScreenCompact(
             text = "Select size",
             onClick = {
                 onClickAttr("size")
+                error = ""
             }
         )
         Spacer(Modifier.height(MediumPadding))
@@ -220,6 +278,7 @@ fun AddItemScreenCompact(
             text = "Select style",
             onClick = {
                 onClickAttr("style")
+                error = ""
             }
         )
     }

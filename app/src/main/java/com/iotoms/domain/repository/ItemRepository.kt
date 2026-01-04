@@ -2,6 +2,8 @@ package com.iotoms.domain.repository
 
 import androidx.paging.PagingData
 import com.iotoms.data.local.entity.ItemEntity
+import com.iotoms.data.model.request.AddItemRequest
+import com.iotoms.data.model.response.ItemResponse
 import com.iotoms.data.remote.api.ApiError
 import com.iotoms.utils.Result
 import kotlinx.coroutines.flow.Flow
@@ -15,4 +17,5 @@ interface ItemRepository {
     fun getPaginateItemsByItemIdsFromLocal(ids: List<String>): Flow<PagingData<ItemEntity>>
     fun searchItemsFromLocal(query: String): Flow<PagingData<ItemEntity>>
     fun getItemByItemId(itemId: String): Flow<ItemEntity?>
+    suspend fun addItem(addItemRequest: AddItemRequest): Result<ItemResponse, ApiError>
 }
