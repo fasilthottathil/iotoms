@@ -10,10 +10,10 @@ data class FileUploadResponse(
 	val bucket: String? = null,
 
 	@field:SerializedName("compressionRatio")
-	val compressionRatio: Int? = null,
+	val compressionRatio: Double? = null,
 
 	@field:SerializedName("compressedSizeBytes")
-	val compressedSizeBytes: Int? = null,
+	val compressedSizeBytes: Double? = null,
 
 	@field:SerializedName("publicUrl")
 	val publicUrl: String? = null,
@@ -37,7 +37,7 @@ data class FileUploadResponse(
 	val fileId: String? = null,
 
 	@field:SerializedName("sizeBytes")
-	val sizeBytes: Int? = null,
+	val sizeBytes: Double? = null,
 
 	@field:SerializedName("compressionApplied")
 	val compressionApplied: Boolean? = null

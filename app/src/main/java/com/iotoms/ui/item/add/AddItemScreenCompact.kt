@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.iotoms.ui.components.DropDownBox
 import com.iotoms.ui.components.ErrorOutlinedBox
 import com.iotoms.ui.components.ImageUploadSection
@@ -49,6 +51,7 @@ fun AddItemScreenCompact(
     var upc by remember { mutableStateOf(itemEntity.upc) }
     var sellingPrice by remember { mutableStateOf(itemEntity.sellingPrice) }
     var costPrice by remember { mutableStateOf(itemEntity.costPrice) }
+    var description by remember { mutableStateOf(itemEntity.description) }
     var error by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(uiState.value) {
         error = uiState.value.error.orEmpty()
@@ -140,9 +143,25 @@ fun AddItemScreenCompact(
                 error = ""
             }
         )
-
+        Spacer(Modifier.height(SmallPadding))
+        Text(
+            "Description",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(start = ExtraSmallPadding)
+        )
+        OutlinedTextBox(
+            modifier = Modifier.heightIn(min = 150.dp),
+            placeholder = {
+                Text("Enter description")
+            },
+            value = description.orEmpty(),
+            onValueChange = {
+                itemEntity.description = it
+                description = it
+                error = ""
+            }
+        )
         Spacer(Modifier.height(MediumPadding))
-
         Row {
             Column(Modifier.weight(1f)) {
                 Text(

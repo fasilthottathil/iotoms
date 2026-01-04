@@ -65,7 +65,7 @@ fun ViewItemScreenExpanded(modifier: Modifier, itemEntity: ItemEntity?) {
             if (itemEntity?.description.isNullOrEmpty().not()) {
                 Spacer(Modifier.height(SmallPadding))
                 Text(
-                    text = itemEntity.itemName.orEmpty(),
+                    text = itemEntity.description.orEmpty(),
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -139,6 +139,90 @@ fun ViewItemScreenExpanded(modifier: Modifier, itemEntity: ItemEntity?) {
                 )
                 OutlinedTextBox(
                     value = itemEntity?.costPrice.getOrZero().toString(),
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+        }
+        Spacer(Modifier.height(SmallPadding))
+        Row {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Department",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.department.orEmpty().ifEmpty { "Not selected" },
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+            Spacer(Modifier.width(ExtraSmallPadding))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Color",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.color?.name.orEmpty().ifEmpty { "Not selected" },
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+        }
+        Spacer(Modifier.height(SmallPadding))
+        Row {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Size",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.size.orEmpty().ifEmpty { "Not selected" },
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+            Spacer(Modifier.width(ExtraSmallPadding))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Color",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.brand.orEmpty().ifEmpty { "Not selected" },
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+        }
+        Spacer(Modifier.height(SmallPadding))
+        Row {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Category",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.category.orEmpty().ifEmpty { "Not selected" },
+                    onValueChange = { },
+                    readOnly = true
+                )
+            }
+            Spacer(Modifier.width(ExtraSmallPadding))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Sub Category",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = ExtraSmallPadding)
+                )
+                OutlinedTextBox(
+                    value = itemEntity?.subcategory.orEmpty().ifEmpty { "Not selected" },
                     onValueChange = { },
                     readOnly = true
                 )
